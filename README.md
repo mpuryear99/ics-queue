@@ -1,3 +1,7 @@
+# ICS Queue
+
+This repo contains the source code for the ICS Queue senior design project.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
