@@ -382,17 +382,14 @@ a.text-info:hover {
   width: 100%;
   max-width: 90rem;
   margin: 0 auto;
-  
-  /* FROM: #system-indicia .col */
-  float: left;
-  padding: 1rem;
 }
 
-/* #system-indicia .col {
+#system-indicia .col {
   float: left;
-  width: 50%;
+  /* width: 50%; */
+  width: 100%;
   padding: 1rem;
-} */
+}
 
 /* #system-indicia .col p.accessibility {
   text-align: right;
