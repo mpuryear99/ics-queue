@@ -1,0 +1,7 @@
+@use "global/_normalize.css";
+
+@use "global/base";
+
+#utk-footer-segment {
+  @import "components/utk-footer";
+}
