@@ -382,24 +382,30 @@ a.text-info:hover {
   width: 100%;
   max-width: 90rem;
   margin: 0 auto;
-}
-
-#system-indicia .col {
+  
+  /* FROM: #system-indicia .col */
   float: left;
-  width: 50%;
   padding: 1rem;
 }
 
-#system-indicia .col p.accessibility {
+/* #system-indicia .col {
+  float: left;
+  width: 50%;
+  padding: 1rem;
+} */
+
+/* #system-indicia .col p.accessibility {
   text-align: right;
   margin-bottom: 0;
-}
+} */
 
-p.accessibility,p.system {
+/* p.accessibility, */
+p.system {
   font-size: 0.75rem;
 }
 
-p.accessibility a,p.system a {
+/* p.accessibility a, */
+p.system a {
   text-decoration: underline;
 }
 
