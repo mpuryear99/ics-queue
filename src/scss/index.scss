@@ -1,0 +1,13 @@
+@use "global/_normalize.css";
+
+@use "global/base";
+
+div#utk-header-segment {
+  overflow: auto;
+
+  @import "./components/utk-header";
+ }
+
+#utk-footer-segment {
+  @import "./components/utk-footer";
+}
