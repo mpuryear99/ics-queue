@@ -223,6 +223,17 @@ header[role="banner"] h2.site-title {
   }
 }
 
+header[role="banner"] h2.site-title.parent-show {
+  margin-top: 0.666667rem;
+  line-height: 1;
+}
+
+@media (min-width: 992px) {
+  header[role="banner"] h2.site-title.parent-show {
+    margin-top: 0.5rem;
+  }
+}
+
 .container-columns {
   position: relative;
   width: 100%;
