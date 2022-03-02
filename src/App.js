@@ -1,9 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
+import Admin from './components/Admin';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
+      <Router>
+        <Routes>
+        <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </Router>      
       <div className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
