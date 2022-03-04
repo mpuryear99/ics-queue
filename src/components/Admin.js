@@ -1,6 +1,7 @@
 import React from "react";
 import Appointment from "./Appointment";
 import AdminMainData from "./AdminMainData";
+import MachineLinks from "./MachineLinks"
 
 
 let Appointments = {
@@ -55,6 +56,9 @@ export default function Admin() {
             }}>
                 <AdminMainData num_Users={Data[1].num_Users} time_usage={Data[1].time_usage} scheduled_App={Data[1].scheduled_App} curr_Proj={Data[1].curr_Proj}/>
             </div>
+        </div>
+        <div className="MachineLinks">
+            <MachineLinks/>
         </div>
     </div>
     );
