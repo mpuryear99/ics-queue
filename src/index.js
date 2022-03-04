@@ -4,12 +4,14 @@ import './scss/index.scss';
 import App from './App';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import AdminView from './components/AdminView';
+
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <Header />
-    <App />
+    <AdminView />
     <Footer />
   </React.StrictMode>,
   document.getElementById('root')
