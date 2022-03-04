@@ -5,12 +5,20 @@ import App from './App';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import reportWebVitals from './reportWebVitals';
+import Admin from './components/Admin';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+
 
 ReactDOM.render(
   <React.StrictMode>
     <Header />
-    <App />
-    <Footer />
+    <Router>
+        <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </Router>      <Footer />
   </React.StrictMode>,
   document.getElementById('root')
 );
