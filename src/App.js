@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <Scheduler />
-      <div className="App-header">
+      {/* <div className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -19,7 +19,7 @@ function App() {
         >
           Learn React
         </a>
-      </div>
+      </div> */}
     </div>
   );
 }
