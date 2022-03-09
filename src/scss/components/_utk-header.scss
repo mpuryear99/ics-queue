@@ -84,11 +84,6 @@ a {
   }
 }
 
-// This doesn't do anything
-// .small, small {
-//   font-size: 75%;
-// }
-
 .container-columns {
   position: relative;
   width: 100%;
@@ -105,43 +100,37 @@ header[role="banner"] {
     width: 70px;
     float: left;
     margin-top: 1rem;
-
-    //@media (min-width: 1200px) {
-    @media (min-width: 1000px) {
-      width: max(240px, 20%);
-    }
-    
-    @media (min-width: 992px) {
-      margin-top: 1.3rem;
-    }
   }
 
   h2.site-title {
-    //width: 50%;
-    //float: left;
-    //display: inline-block;
-    //vertical-align: bottom;
     overflow: hidden;
-    padding: 0.5rem 0 1rem 1rem;
+    padding: 0.5rem 1rem 1rem;
     font-size: 1.2rem;
     margin-top: 1.2rem;
-    
-    @media (min-width: 576px) {
-      font-size: 2rem;
-      //width: 60%;
-    }
-    
-    @media (min-width: 768px) {
-      //width: 80%;
-    }
 
     &.parent-show {
       margin-top: 0.666667rem;
       line-height: 1;
-      
-      @media (min-width: 992px) {
-        margin-top: 0.5rem;
-      }
+    }
+  }
+
+  @media (min-width: 576px) {
+    h1.ut-title {
+      margin-top: 1.3rem;
+    }
+    
+    h2.site-title {
+      font-size: 2rem;
+    }
+  }
+
+  @media (min-width: 992px) {
+    h1.ut-title {
+      width: max(240px, 20%);
+    }
+
+    h2.site-title.parent-show {
+      margin-top: 0.5rem
     }
   }
 }
@@ -176,8 +165,9 @@ header[role="banner"] {
   }
 }
 
+/* Comment out old button styles. Keep for reference.
 button.btn-findpage {
-  width: 60px; //20%;
+  width: 60px;
   overflow: hidden;
   float: right;
   background: #dbdcde;
@@ -189,12 +179,6 @@ button.btn-findpage {
   font-size: 0.75rem;
   box-shadow: none;
 }
-
-// @media (min-width: 768px) {
-//   button.btn-findpage {
-//     display: none;
-//   }
-// }
 
 .btn {
   display: inline-block;
@@ -246,6 +230,7 @@ button.btn-findpage {
     box-shadow: none;
   }
 }
+*/
 
 ::-webkit-input-placeholder, :-moz-placeholder, ::-moz-placeholder, :-ms-input-placeholder {
   color: #58595b;
