@@ -3,7 +3,12 @@
 @use "global/base";
 
 div#utk-header-segment {
-  overflow: auto;
+  //overflow: auto;
+  &::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
 
   @import "./components/utk-header";
  }

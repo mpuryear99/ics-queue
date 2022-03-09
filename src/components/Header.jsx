@@ -17,11 +17,6 @@ const Header = () => {
           <h1 className="ut-title">
             <a className="killer-logo" href="http://www.utk.edu">The University of Tennessee, Knoxville</a>
           </h1>
-          <h2 className="site-title parent-show">
-            <a href="http://innovate.utk.edu" title="Innovation & Collaboration Studio" rel="home">Innovation &amp; Collaboration Studio</a>
-            <br/> {/* br origionally first element of TCE link */}
-            <a href="https://tickle.utk.edu"><small>Tickle College of Engineering</small></a>
-          </h2>
           <button type="button" className="btn btn-findpage">
             <span className="sr-only">Toggle navigation</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -30,6 +25,11 @@ const Header = () => {
             <br/>
             Menu
           </button>
+          <h2 className="site-title parent-show">
+            <a href="http://innovate.utk.edu" title="Innovation & Collaboration Studio" rel="home">Innovation &amp; Collaboration Studio</a>
+            <br/> {/* br origionally first element of TCE link */}
+            <a href="https://tickle.utk.edu"><small>Tickle College of Engineering</small></a>
+          </h2>
         </div>
       </header>
     </div>
