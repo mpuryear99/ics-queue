@@ -59,7 +59,7 @@ function MenuItemLinkExternal(props) {
 }
 
 
-const HeaderNavMenu = () => {
+const HeaderNavMenu = ({btnStyle}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuOpen = Boolean(anchorEl);
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
@@ -73,8 +73,12 @@ const HeaderNavMenu = () => {
         //aria-haspopup="true"
         //aria-expanded={open ? 'true' : undefined}
         onClick={handleMenuClick}
-        sx={{ borderRadius: '20%' }}
-        size='large'
+        size='small'
+        sx={{ 
+          borderRadius: '20%',
+          // background: '#dbdcde',
+          ...btnStyle
+        }}
       >
         <MenuIcon fontSize="large"/>
       </IconButton>
