@@ -30,22 +30,15 @@ let Data =
 export default function Admin() {
     return (
     <div>
-        <h1>Admin Home Page</h1>
+        <h1 style = {{padding: "0px 25px"}}>Admin Home Page</h1>
         <div className="Display" 
             style={{
                 display: "flex"
             }}>
-            <div className="Appointments" 
-            style={{
-                width: "700px",
-                border: "2px solid #ffffff",
-                padding: "10px",
-                background: "#ffffff",
-            }}>
-                <Appointment name={Appointments[1].name} day={Appointments[1].day}/>
-                <Appointment name={Appointments[2].name} day={Appointments[2].day}/>
+            
+            <div className="MachineLinks">
+                <MachineLinks/>
             </div>
-
             <div className="AdminMainData" 
             style={{
                 width: "500px",
@@ -57,9 +50,7 @@ export default function Admin() {
                 <AdminMainData num_Users={Data[1].num_Users} time_usage={Data[1].time_usage} scheduled_App={Data[1].scheduled_App} curr_Proj={Data[1].curr_Proj}/>
             </div>
         </div>
-        <div className="MachineLinks">
-            <MachineLinks/>
-        </div>
+        
     </div>
     );
 }
