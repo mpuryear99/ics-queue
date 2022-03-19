@@ -4,10 +4,12 @@ import Footer from "../Footer";
 import Header from "../Header";
 
 const contentStyle = {
+  boxSizing: 'border-box',
   position: 'relative',
   width: '100%',
   maxWidth: '90rem',
   margin: '0 auto',
+  padding: '20px'
 };
 
 const PageBase = () => {
