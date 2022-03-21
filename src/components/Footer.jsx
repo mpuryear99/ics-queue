@@ -87,8 +87,7 @@ const Footer = () => {
                 {/* <label htmlFor="utk_seek" className="sr-only">Search for:</label> */}
                 <div className="form-group">
                   <input type="text" name="q" /* id="utk_seek" */
-                    onFocus={(e) => {if(e.target.value === 'Search utk.edu') { e.target.value = ''; }}}
-                    defaultValue="Search utk.edu"
+                    placeholder="Search utk.edu"
                     className="form-control" title="Search"/>
                 </div>
                 <input type="submit" value="Go" title="Submit" className="btn btn-orange"/>
