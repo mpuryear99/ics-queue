@@ -46,6 +46,7 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
+*.secrets
 
 packages/react-devtools-core/dist
 packages/react-devtools-extensions/chrome/build
