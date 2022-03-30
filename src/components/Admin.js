@@ -1,34 +1,78 @@
-import React from "react";
-import Appointment from "./Appointment";
+import React, { useEffect } from "react";
+import MachineListBox from "./MachineListBox";
+import axios from "axios";
 
 
-let Appointments = {
-    1: {
-        name: "3D Printer",
-        day: "2/22/22",
-    },
-    2: {
-        name: "CNC Machine",
-        day: "12/23/34",
-    }
-}
 
-export default function Admin() {
+// const getData = async () => {
+
+//     // let data = await fetch("/getmachines/").then(res => res.json()).then(res => res);
+
+    
+//     return data;
+// };
+
+
+//getData
+// const GetData = async () => {
+//         const [data, setData] = React.useState([]);
+//         axios.get("http://localhost:5000/getmachines").then((goodData) => {
+//             setData(goodData.data);
+//         }); 
+//         console.log(data);
+//         // console.log(goodData);
+        
+//         return data;
+// };
+
+export default function Admin () {
+    try {
+        const [data, setData] = React.useState([]);
+        axios.get("http://localhost:5000/getmachines").then((data) => {
+            setData(data.data);
+        }); 
+    
+    // let data = GetData();
+
+    // console.log(data);
+
+    // dataGood.then(data => {
+    //     console.log(data);
+    // });
+
+    
+    // let [data, setData ] = React.useState([]);
+    // useEffect(() => {
+    //     async function getData() {
+    //         axios.get("http://localhost:5000/getmachines").then((goodData) => {
+    //             setData(goodData.data);
+    //         });
+    //     }
+    // }, []);
+       
+
+
     return (
     <div>
         <h1>Admin Home Page</h1>
 
-        <div className="Appointments" 
+        <div className="MachineList" 
         style={{
             width: "500px",
             border: "2px solid #ffffff",
             padding: "10px",
             background: "#ffffff",
         }}>
-            <Appointment name={Appointments[1].name} day={Appointments[1].day}/>
-            <Appointment name={Appointments[2].name} day={Appointments[2].day}/>
+         
+            <MachineListBox machineList={data}/>
 
         </div>
     </div>
     );
+
+
+    } catch (error) {
+        console.log(error);
+        return(<div>Error</div>);
+    }
 }
