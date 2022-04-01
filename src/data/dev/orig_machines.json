@@ -1,0 +1,208 @@
+{
+  "machines":[
+    {
+      "name": "Vertical Band Saws",
+      "number": 2,
+      "image": "",
+      "description": "vertical bladed saw used to make simple, smaller cuts"
+    },
+    {
+      "name": "Powermatic Vertical Band Saw",
+      "number": 1,
+      "image": "",
+      "description": "larger scale band saw, used for small cuts in a medium project"
+    },
+    {
+      "name": "Horizontal Band Saw",
+      "number": 1,
+      "image": "",
+      "description": "similar to a vertical band saw, however more force than a vertical band saw"
+    },
+    {
+      "name": "Chop/Miter Saw",
+      "number": 1,
+      "image": "",
+      "description": "rotating circular blade used to make perpendicular and angled cuts on medium/large projects (good for projects that are longer in one direction, ex. PVC pipes)"
+    },
+    {
+      "name": "Drill Press",
+      "number": 3,
+      "image": "",
+      "description": "used to drill holes through projects, can also use attachments to cut holes out of a piece (ex. for an inset); machines at varying speeds for different materials"
+    },
+    {
+      "name": "Grinder and Buffing Wheel",
+      "number": 1,
+      "image": "",
+      "description": "used for sharpening and to give smoothness and polish metal surfaces"
+    },
+    {
+      "name": "Belt Sander",
+      "number": 1,
+      "image": "",
+      "description": "used to sand down edges and corners on moderate-size projects"
+    },
+    {
+      "name": "Drum Sander",
+      "number": 1,
+      "image": "",
+      "description": "used for fine surfacing or sanding wood"
+    },
+    {
+      "name": "Intermediate Sander",
+      "number": 1,
+      "image": "",
+      "description": "used for smoothing edges on smaller projects"
+    },
+    {
+      "name": "Oscillating Spindle Sander",
+      "number": 1,
+      "image": "",
+      "description": "used to smooth curved edges on pieces of wood"
+    },
+    {
+      "name": "Scroll Saw",
+      "number": 1,
+      "image": "",
+      "description": "used to make intricate and precise cuts, usually small scale; can be adjusted to have a multidirectional blade that allows for smoother curves in a cut (think jigsaw puzzles)"
+    },
+    {
+      "name": "Table Saw",
+      "number": 1,
+      "image": "",
+      "description": "used for large cuts"
+    },
+    {
+      "name": "Wooden Lathe",
+      "number": 1,
+      "image": "",
+      "description": "rotates a piece of wood that can be carved with a chisel (think table legs), and can also be used to aid in uniform sanding of a project"
+    },
+    {
+      "name": "Powermatic Lathe",
+      "number": 1,
+      "image": "",
+      "description": "a large scale lathe with the same use/function as the lathe mentioned above"
+    },
+    {
+      "name": "Planer/Jointer",
+      "number": 1,
+      "image": "",
+      "description": "planer used to make a large flat sheet; jointer can be used to straighten and square edges"
+    },
+    {
+      "name": "CNC Router",
+      "number": 1,
+      "image": "",
+      "description": "Computer Numerical Controlled milling machine that can remove material using a defined cutting edge to produce parts"
+    },
+    {
+      "name": "Manual CNC",
+      "number": 1,
+      "image": "",
+      "description": ""
+    },
+    {
+      "name": "Tabletop CNC",
+      "number": 1,
+      "image": "",
+      "description": ""
+    },
+    {
+      "name": "Prusa",
+      "number": 5,
+      "image": "",
+      "description": ""
+    },
+    {
+      "name": "Lulzbots Mini",
+      "number": 8,
+      "image": "",
+      "description": "Lulzbot Minis are single extruder printers with an area of 5 x 5 x5.5in"
+    },
+    {
+      "name": "Lulzbots Taz 6",
+      "numuber": 2,
+      "image": "",
+      "description": "Lulzbot Taz 6 is a single extruder with a print area of 11 x 11 x 10in"
+    },
+    {
+      "name": "Stratasys Fortus 450MC",
+      "number": 6,
+      "image": "",
+      "description": "a thermoplastic 3D printer with a print area of 16 x 14 x 16in; possesses multiple extruders and should be used for more in-depth projects that require precision"
+    },
+    {
+      "name": "45W Full Spectrum P-Series Laser Cutter",
+      "number": 1,
+      "image": "",
+      "description": "cutter can perform vector cuts as well as engrave into materials. If you need to use ABS or other toxic materials, you will need to get approval by an advisor prior to making any cuts due to health hazards."
+    },
+    {
+      "name": "90W Full Spectrum Laser H-Series Professional 24″x16″ CO2 Laser",
+      "number": 1,
+      "image": "",
+      "description": "cutters can perform vector cuts as well as engrave into materials. If you need to use ABS or other toxic materials, you will need to get approval by an advisor prior to making any cuts due to health hazards."
+    },
+    {
+      "name": "Cricut",
+      "number": 1,
+      "image": "",
+      "description":"digital die-cutting machine that can cut many different materials like paper, vinyl, heat transfer vinyl, and cardstock"
+    },
+    {
+      "name": "Embroidery Machine",
+      "number": 1,
+      "image": "",
+      "description": "can be used for sewing as well as embroidery"
+    },
+    {
+      "name": "CNC Mill (Haas)",
+      "number": 1,
+      "image": "",
+      "description": "Computer Numerical Controlled milling machine that can remove material using a defined cutting edge to produce parts (can handle materials such as metal)"
+    },
+    {
+      "name": "CNC Lathe (Haas)",
+      "number": 1,
+      "image": "",
+      "description": "Computer Numerical Controlled turning machine"
+    },
+    {
+      "name": "Bridgeport Mill",
+      "number": 1,
+      "image": "",
+      "description": "can be used for automatic or manual milling"
+    },
+    {
+      "name": "Horizontal Metal Bandsaw",
+      "number": 1,
+      "image": "",
+      "description": "used for making horizontal cuts through metal"
+    },
+    {
+      "name": "Arbor Press",
+      "number": 1,
+      "image": "",
+      "description": "built for pressing, bending, and straightening sheet metal"
+    },
+    {
+      "name": "ProtoMAX WaterJet Cutter",
+      "number": 1,
+      "image": "",
+      "description": " can cut through material such as: aluminum, titanium, stone, carbon fiber, and G10 composite"
+    },
+    {
+      "name": "Lincoln Arc Welder",
+      "number": 1,
+      "image": "",
+      "description": "can weld a variety of materials such as carbon, low alloy, and stainless steel as well as cast iron"
+    },
+    {
+      "name": "Miller Welder",
+      "number": 1,
+      "image": "",
+      "description": ""
+    }
+  ]
+}
