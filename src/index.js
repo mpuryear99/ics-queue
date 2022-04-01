@@ -14,19 +14,13 @@ ReactDOM.render(
   <React.StrictMode>
     <Header />
     <Router>
-        <Routes>
+      <Routes>
         <Route path="/" element={<App />} />
-        
         <Route path="/admin" element={<Admin/>} />
-
         <Route path="/admin/:machine" element={<TempMachine/>} />
-        
-       
-
-
-
-        </Routes>
-      </Router>      <Footer />
+      </Routes>
+    </Router>
+    <Footer />
   </React.StrictMode>,
   document.getElementById('root')
 );

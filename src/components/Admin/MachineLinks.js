@@ -7,15 +7,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Data, {names} from "./Machines/SampleData";
 
 
-
-
-
-
-
-// generatePath("/admin/:id", {
-//   id: Data[1].machine,
-// });
-
 export default function MachineLinks() {
   return (
     <Box
@@ -32,13 +23,13 @@ export default function MachineLinks() {
     >
       <h1 style={{ padding: " 0px 25px" }}>Machines</h1>
       <nav aria-label="machine links">
-      <List>
-        {names.map(tool => {
+        <List>
+          {names.map(tool => {
             return (
               <ListItem key={tool.machine}>
-                  <ListItemButton component="a" href = {`admin/${tool.machine.replace(' ', '-')}`}>
-                    <ListItemText primary={tool.machine} />
-                  </ListItemButton>
+                <ListItemButton component="a" href = {`admin/${tool.machine.replace(' ', '-')}`}>
+                  <ListItemText primary={tool.machine} />
+                </ListItemButton>
               </ListItem>
             );
           })}
