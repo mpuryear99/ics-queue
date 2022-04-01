@@ -22,11 +22,13 @@ const Footer = () => {
             </div>
             <div id="meta-contact">
               <p>
-                B2 Perkins Hall, Knoxville, TN 37996
+                {/* B2 Perkins Hall, Knoxville, TN 37996<br/> */}
+                G167 Zeanah Engineering Complex,
+                <br/>
+                863 Neyland Drive, Knoxville, TN 37902
+                <br/>
                 <span className="emailList">
-                  <br/>
-                  Email:&nbsp;
-                  <a href="mailto:ics@utk.edu">ics@utk.edu</a>
+                  Email: <a href="mailto:ics@utk.edu">ics@utk.edu</a>
                 </span>
               </p>
               <a className="sm-icon twitter" href="http://twitter.com/UTK_TCE">
@@ -85,15 +87,9 @@ const Footer = () => {
             <div id="toolkit">
               <form id="utk_seek" method="GET" action="//search.utk.edu/">
                 {/* <label htmlFor="utk_seek" className="sr-only">Search for:</label> */}
-                <div className="form-group">
-                  <input type="text" name="q" /* id="utk_seek" */
-                    onFocus={(e) => {if(e.target.value === 'Search utk.edu') { e.target.value = ''; }}}
-                    defaultValue="Search utk.edu"
-                    className="form-control" title="Search"/>
-                </div>
+                <input type="text" name="q" title="Search" placeholder="Search utk.edu" className="form-control" /* id="utk_seek" */ />
                 <input type="submit" value="Go" title="Submit" className="btn btn-orange"/>
               </form>
-              <br/>
               <nav role="navigation">
                 <a href="http://calendar.utk.edu/">Events</a>
                 <a href="http://www.utk.edu/alpha/">A-Z </a>
