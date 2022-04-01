@@ -31,8 +31,6 @@ export function ListItemLink({ icon, primary, to, ...other }) {
  * Wrapper component to allow React-Router {@link Link} in MUI {@link MenuItem}.
  */
  export function MenuItemLink({ icon, primary, to, ...other }) {
-  console.log(other)
-  
   const renderLink = React.useMemo(
     () =>
       React.forwardRef((itemProps, ref) => {
