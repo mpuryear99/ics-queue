@@ -9,7 +9,8 @@ import Error404Page from './components/pages/Error404Page';
 import AdminPage from './components/pages/AdminPage';
 import SchedulerPage from './components/pages/SchedulerPage';
 import OverviewPage from './components/pages/OverviewPage';
-
+import Admin from './components/Admin/Admin';
+import TempMachine from "./components/Admin/Machines/TempMachine";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,7 +18,9 @@ ReactDOM.render(
       <Routes>
         <Route path="/" element={<PageBase />}>
           <Route path="" element={<App />} />
-          <Route path="admin" element={<AdminPage />} />
+          <Route path="admin" element={<Admin />}>
+            <Route path=":machine" element={<TempMachine/>} />
+          </Route>
           <Route path="schedule" element={<SchedulerPage />} />
           <Route path="overview" element={<OverviewPage />} />
         </Route>
