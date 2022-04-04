@@ -1,9 +1,7 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
+import { ListItemLink } from "../extensions/mui/links";
 import Data, {names} from "./Machines/SampleData";
 
 
@@ -24,15 +22,9 @@ export default function MachineLinks() {
       <h1 style={{ padding: " 0px 25px" }}>Machines</h1>
       <nav aria-label="machine links">
         <List>
-          {names.map(tool => {
-            return (
-              <ListItem key={tool.machine}>
-                <ListItemButton component="a" href = {`admin/${tool.machine.replace(' ', '-')}`}>
-                  <ListItemText primary={tool.machine} />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
+          {names.map(tool => (
+            <ListItemLink key={tool.machine} primary={tool.machine} to={`./${tool.machine.replace(' ', '-')}`} />
+          ))}
         </List>
       </nav>
     </Box>

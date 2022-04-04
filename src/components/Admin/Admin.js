@@ -1,7 +1,8 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import Appointment from "./Appointment";
 import AdminMainData from "./AdminMainData";
-import MachineLinks from "./MachineLinks"
+import MachineLinks from "./MachineLinks";
 
 
 let Appointments = {
@@ -23,8 +24,6 @@ let Data =
         scheduled_App: 5, 
         curr_Proj: 6,
     }, 
-
-
 }
 
 export default function Admin() {
@@ -50,7 +49,7 @@ export default function Admin() {
                 <AdminMainData num_Users={Data[1].num_Users} time_usage={Data[1].time_usage} scheduled_App={Data[1].scheduled_App} curr_Proj={Data[1].curr_Proj}/>
             </div>
         </div>
-        
+        <Outlet/>
     </div>
     );
 }
