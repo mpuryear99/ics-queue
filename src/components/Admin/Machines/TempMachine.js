@@ -1,23 +1,18 @@
 import React, { useEffect } from "react";
 import MachineData from "./MachineData";
 import {useParams} from 'react-router-dom';
-import Data, {names} from "./SampleData";
 
 
-
-// let Data = 
-// {
-//     1: {
-//         machine: "Temp Place Hodler",
-//         num_Users: 20,
-//         time_usage: "2 hours", 
-//         scheduled_App: 5, 
-//         curr_Proj: 6,
-//     }, 
-// }
-
-
-
+let Data = 
+{
+    1: {
+        machine: "Temp Place Hodler",
+        num_Users: 20,
+        time_usage: "2 hours", 
+        scheduled_App: 5, 
+        curr_Proj: 6,
+    }, 
+}
 
 
 export default function TempMachine(name) {
@@ -27,8 +22,7 @@ export default function TempMachine(name) {
 
     const { machine } = useParams();
     name = machine.replace("-", " ")
-    const thisMachine = Data[name]
-
+    const thisMachine = Data[1]
 
     return (
     <div>
@@ -38,9 +32,6 @@ export default function TempMachine(name) {
                 display: "flex"
             }}>
             
-            <div className="Schedule">
-                
-            </div>
             <div className="MachineData" 
             style={{
                 width: "500px",
@@ -50,10 +41,8 @@ export default function TempMachine(name) {
                 alignItems: "center"
             }}>
                 <MachineData machine = {thisMachine.name} num_Users={thisMachine.num_Users} time_usage={thisMachine.time_usage} scheduled_App={thisMachine.scheduled_App} curr_Proj={thisMachine.curr_Proj}/>
-
             </div>
         </div>
-        
     </div>
     );
 }

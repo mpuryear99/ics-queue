@@ -1,22 +1,13 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Data, {names} from "./Machines/SampleData";
+import { ListItemLink } from "../extensions/mui/links";
+import DBService from "../../data/DBService";
 
-
-
-
-
-
-
-// generatePath("/admin/:id", {
-//   id: Data[1].machine,
-// });
 
 export default function MachineLinks() {
+  const machineList = React.useMemo(() => DBService.getMachines(),  []);
+
   return (
     <Box
       sx={{
@@ -30,20 +21,12 @@ export default function MachineLinks() {
         overflow: "auto",
       }}
     >
-      <h1 style={{ padding: " 0px 25px" }}>Machines</h1>
-      <nav aria-label="machine links">
+      <h1 style={{ padding: "0px 25px" }}>Machines</h1>
       <List>
-        {names.map(tool => {
-            return (
-              <ListItem key={tool.machine}>
-                  <ListItemButton component="a" href = {`admin/${tool.machine.replace(' ', '-')}`}>
-                    <ListItemText primary={tool.machine} />
-                  </ListItemButton>
-              </ListItem>
-            );
-          })}
-        </List>
-      </nav>
+        {machineList.map(m => (
+          <ListItemLink key={m._id} primary={m.name} to={m._id.toString()} />
+        ))}
+      </List>
     </Box>
   );
 }
