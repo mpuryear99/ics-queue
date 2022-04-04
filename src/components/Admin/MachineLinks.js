@@ -1,11 +1,13 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import { ListItemLink } from "../extensions/mui/links";
-import Data, {names} from "./Machines/SampleData";
+import DBService from "../../data/DBService";
 
 
 export default function MachineLinks() {
+  const machineList = React.useMemo(() => DBService.getMachines(),  []);
+
   return (
     <Box
       sx={{
@@ -19,14 +21,12 @@ export default function MachineLinks() {
         overflow: "auto",
       }}
     >
-      <h1 style={{ padding: " 0px 25px" }}>Machines</h1>
-      <nav aria-label="machine links">
-        <List>
-          {names.map(tool => (
-            <ListItemLink key={tool.machine} primary={tool.machine} to={`./${tool.machine.replace(' ', '-')}`} />
-          ))}
-        </List>
-      </nav>
+      <h1 style={{ padding: "0px 25px" }}>Machines</h1>
+      <List>
+        {machineList.map(m => (
+          <ListItemLink key={m._id} primary={m.name} to={m._id.toString()} />
+        ))}
+      </List>
     </Box>
   );
 }
