@@ -1,20 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Appointment from "./Appointment";
 import AdminMainData from "./AdminMainData";
 import MachineLinks from "./MachineLinks";
 
-
-let Appointments = {
-    1: {
-        name: "3D Printer",
-        day: "2/22/22",
-    },
-    2: {
-        name: "CNC Machine",
-        day: "12/23/34",
-    }
-}
 
 let Data = 
 {
