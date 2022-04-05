@@ -1,13 +1,9 @@
 import React from "react";
-import { Link as RouterLink } from 'react-router-dom';
 
-/* MUI Components */
-//import Button from '@mui/material/Button';
+/* MUI Components & Extensions */
+import { MenuItemLink, MenuItemLinkExternal } from "./extensions/mui/links";
 import IconButton from "@mui/material/IconButton";
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider'
 //import Collapse from '@mui/material/Collapse';
 
@@ -20,43 +16,6 @@ import EventIcon from '@mui/icons-material/Event';                            //
 import DataUsageIcon from '@mui/icons-material/DataUsage';                    // Overview Page
 //import ExpandLess from '@mui/icons-material/ExpandLess';
 //import ExpandMore from '@mui/icons-material/ExpandMore';
-
-
-// Wrapper component function to allow React-Router links in MUI MenuItem 
-function MenuItemLink(props) {
-  const { icon, primary, to, ...other } = props;
-
-  const renderLink = React.useMemo(
-    () =>
-      React.forwardRef((itemProps, ref) => {
-        return <RouterLink to={to} ref={ref} {...itemProps} /*role={undefined}*/ />;
-      }),
-    [to],
-  );
-  
-  return (
-    <li>
-      <MenuItem component={renderLink} {...other}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
-      </MenuItem>
-    </li>
-  );
-}
-
-// Wrapper component function to allow anchor <a> links in MUI MenuItem 
-function MenuItemLinkExternal(props) {
-  const { icon, primary, to, ...other } = props;
-  
-  return (
-    <li>
-      <MenuItem component='a' href={to} {...other}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
-      </MenuItem>
-    </li>
-  );
-}
 
 
 const HeaderNavMenu = ({btnStyle}) => {
