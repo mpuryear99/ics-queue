@@ -2,6 +2,7 @@ import React from "react";
 import DBService from "../../data/DBService";
 
 // MUI
+import Autocomplete from "@mui/material/Autocomplete";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
@@ -20,7 +21,7 @@ import moment from "moment";
 
 
 function generateTimes(start, end, step) {
-  let times = [start];
+  let times = [start.clone()];
   while(true) {
     let t = times[times.length - 1].clone();
     t.add(step);
@@ -34,7 +35,7 @@ function generateTimes(start, end, step) {
 
 const ApptForm = () => {
   const [formData, setFormData] = React.useState({
-    machine: '',
+    machine: null,
     duration: '',
     date: '',
     time: '',
@@ -50,17 +51,9 @@ const ApptForm = () => {
 
   React.useEffect(async () => {
     let ml = await DBService.getMachines();
-    console.log("ML", ml);
     setMachineList(ml);
   }, []);
 
-  let machineOptionMenuItems = React.useMemo(() => {
-    if (machineList !== undefined) {
-      return machineList.map(m => <MenuItem key={m._id} value={m}>{m.name}</MenuItem>);
-    } else return [];
-  }, [machineList]);
-
-  
   let timeOptionMenuItems = React.useMemo(() => {
     let minTime = moment("0800", "hmm");
     let maxTime = moment("1700", "hmm");
@@ -104,11 +97,20 @@ const ApptForm = () => {
     setValidStatus(newVS);
   }
   
-  
-  const handleMachineChange = (event) => {
+  /**
+   * Callback fired when the machine value changes for {@link Autocomplete.onChange}.
+   * @param {React.SyntheticEvent} event The event source of the callback.
+   * @param {T|T[]} value The new value of the component.
+   * @param {string} reason One of "createOption", "selectOption", "removeOption", "blur" or "clear".
+   * @param {string} [details]
+   */
+  const handleMachineChange = (event, value, reason, details) => {
+    if (reason !== "selectOption" && reason !== "clear")
+      return;
+
     let fd = {
       ...formData,
-      machine: event.target.value,
+      machine: value,
       date: '',
       time: '',
     }
@@ -138,12 +140,11 @@ const ApptForm = () => {
       ...formData,
       time: event.target.value,
     }
-    console.log(fd.time);
     setFormData(fd);
   }
 
   return (
-    <>
+    <form>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={machineList === undefined}
@@ -151,17 +152,17 @@ const ApptForm = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      <FormControl fullWidth sx={{m:1}}>
-        <InputLabel id="machine-select-label">Machine</InputLabel>
-        <Select
-          labelId="machine-select-label"
-          label="Machine"
-          value={formData.machine}
-          onChange={handleMachineChange}
-        >
-          {machineOptionMenuItems}
-        </Select>
-      </FormControl>
+      <Autocomplete
+        fullWidth
+        sx={{m:1}}
+        disablePortal
+        autoHighlight
+        options={(machineList ?? [])}
+        value={formData.machine}
+        onChange={handleMachineChange}
+        getOptionLabel={(option) => option.name ?? option._id ?? option}
+        renderInput={(params) => <TextField {...params} label="Machine" />}
+      />
 
       <FormControl fullWidth sx={{m:1}}>
         <InputLabel id="duration-select-label">Length of Job</InputLabel>
@@ -207,7 +208,7 @@ const ApptForm = () => {
           {timeOptionMenuItems}
         </Select>
       </FormControl>
-    </>
+    </form>
   );
 }
 
