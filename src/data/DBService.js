@@ -1,18 +1,20 @@
-import machines_json from "./dev/machines.json";
-
-const sample_data = {
-  machines: machines_json.machines,
-}
+// API & Database service wrapper
 
 class DBService {
   /**
    * Read machine list from database.
-   * (WIP-DEV: Currently reads from file)
    *
    * @return list of machine info objects
    */
-  getMachines() {
-    return sample_data.machines;
+  async getMachines() {
+    try {
+      var res = await fetch('api/getmachines');
+      var data = await res.json();
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
   }
 }
 
