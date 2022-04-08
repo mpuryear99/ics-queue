@@ -9,7 +9,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const machines_json = require("./data/dev/machines.json");
 
 module.exports = function(app) {
-	if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production') {
     throw new Error("Mock API running in production.");
   }
 
