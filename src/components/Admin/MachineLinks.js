@@ -6,7 +6,13 @@ import DBService from "../../data/DBService";
 
 
 export default function MachineLinks() {
-  const machineList = React.useMemo(() => DBService.getMachines(),  []);
+  const [machineList, setMachineList] = React.useState([]);
+  React.useEffect(async () => {
+    let ml = await DBService.getMachines();
+    if (ml !== undefined) {
+      setMachineList(ml)
+    }
+  }, [])
 
   return (
     <Box
