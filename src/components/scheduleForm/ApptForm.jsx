@@ -8,6 +8,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import FormHelperText from "@mui/material/FormHelperText";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 // MUI Lab
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterMoment from '@mui/lab/AdapterMoment';
@@ -44,13 +46,20 @@ const ApptForm = () => {
     allValid: true,
   });
 
-  console.log("why")
+  const [machineList, setMachineList] = React.useState(undefined);
+
+  React.useEffect(async () => {
+    let ml = await DBService.getMachines();
+    console.log("ML", ml);
+    setMachineList(ml);
+  }, []);
 
   let machineOptionMenuItems = React.useMemo(() => {
-    let dbml = DBService.getMachines();
-    let items = dbml.map(m => <MenuItem key={m._id} value={m}>{m.name}</MenuItem>);
-    return items;
-  }, []);
+    if (machineList !== undefined) {
+      return machineList.map(m => <MenuItem key={m._id} value={m}>{m.name}</MenuItem>);
+    } else return [];
+  }, [machineList]);
+
   
   let timeOptionMenuItems = React.useMemo(() => {
     let minTime = moment("0800", "hmm");
@@ -71,7 +80,6 @@ const ApptForm = () => {
 
   const handleDateError = (err) => {
     let valid = (err === null);
-    console.log("DATE-VALID:", valid)
     let status = {
       ...validStatus,
       dateValid: valid
@@ -96,7 +104,7 @@ const ApptForm = () => {
     setValidStatus(newVS);
   }
   
-
+  
   const handleMachineChange = (event) => {
     let fd = {
       ...formData,
@@ -117,7 +125,6 @@ const ApptForm = () => {
   }
 
   const handleDateChange = (newValue) => {
-    console.log("hdc:", newValue)
     let fd = {
       ...formData,
       date: newValue,
@@ -137,6 +144,13 @@ const ApptForm = () => {
 
   return (
     <>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={machineList === undefined}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       <FormControl fullWidth sx={{m:1}}>
         <InputLabel id="machine-select-label">Machine</InputLabel>
         <Select
@@ -192,31 +206,7 @@ const ApptForm = () => {
         >
           {timeOptionMenuItems}
         </Select>
-        <FormHelperText>Format: (H:MM)</FormHelperText>
       </FormControl>
-
-      {/* <FormControl fullWidth sx={{m:1}}>
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          <TimePicker
-            label="Time"
-            ampm={true}
-            openTo="hours"
-            views={['hours', 'minutes']}
-            inputFormat="HH:mm"
-            value={formData.time}
-            onChange={handleTimeChange}
-            minTime={moment().set({hour:8,  minute:0, second:0, millisecond:0})}
-            maxTime={moment().set({hour:17, minute:0, second:0, millisecond:0})}
-            renderInput={(params) => <TextField {...params} />}
-            // shouldDisableTime={(timeValue, clockType) => {
-            //   if (clockType === 'hours' && !(timeValue >= 8 && timeValue <= 16))
-            //     return false;
-            //   if (clockType === 'minutes' && (timeValue % 30))
-            //     return false;
-            // }}
-          />
-        </LocalizationProvider>
-      </FormControl> */}
     </>
   );
 }
