@@ -8,14 +8,18 @@ class DBService {
    */
   async getMachines() {
     try {
-      var res = await fetch('api/machines');
+      var res = await fetch('api/getmachines');
+      console.log(res)
       var data = await res.json();
+      console.log(data)
     } catch (e) {
       console.error(e);
       return undefined;
     }
-    return data.machines;
+    return data;
   }
+
+
 }
 
 var dbservice = new DBService();
