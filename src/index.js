@@ -11,6 +11,7 @@ import SchedulerPage from './components/pages/SchedulerPage';
 import OverviewPage from './components/pages/OverviewPage';
 import Admin from './components/Admin/Admin';
 import TempMachine from "./components/Admin/Machines/TempMachine";
+import Portal from "./components/StudentPortal/Portal";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -23,6 +24,7 @@ ReactDOM.render(
           </Route>
           <Route path="schedule" element={<SchedulerPage />} />
           <Route path="overview" element={<OverviewPage />} />
+          <Route path="Portal" element={<Portal/>} />
         </Route>
         
         {/* Page not found route */}
