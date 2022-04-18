@@ -8,6 +8,7 @@ import moment from "moment";
 
 export default function ScheduledApps({name}) {
    const appointmentList = React.useMemo(() => DBService.getAppointments(),  []);
+   const machineList = React.useMemo(() => DBService.getMachines(),  []);
    const person = appointmentList.filter(function (appointments)
    {
        return appointments.name === name;
@@ -17,6 +18,17 @@ export default function ScheduledApps({name}) {
    {
       
    }
+
+   function machineName(machineID)
+   {
+      const name = machineList.filter(function (machine)
+        {
+          return machineID === machine._id
+        }
+      )
+      return name[0].name;
+   }
+
    
 
   return (
@@ -40,7 +52,7 @@ export default function ScheduledApps({name}) {
             }}
           >
         <div>
-          <h3>Machine ID: {a.machineID}</h3>
+          <h3>Machine: {machineName(a.machineID)}</h3>
           <h3>Start Time: {moment(a.startTime).format('MMMM Do YYYY, h:mm:ss a')}</h3>
           <h3>End Time: {moment(a.endTime).format('MMMM Do YYYY, h:mm:ss a')}</h3>
         </div>

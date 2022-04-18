@@ -24,7 +24,7 @@ ReactDOM.render(
           </Route>
           <Route path="schedule" element={<SchedulerPage />} />
           <Route path="overview" element={<OverviewPage />} />
-          <Route path="Portal" element={<Portal/>} />
+          <Route path="portal" element={<Portal/>} />
         </Route>
         
         {/* Page not found route */}

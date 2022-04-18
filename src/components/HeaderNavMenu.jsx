@@ -14,6 +14,7 @@ import HomeWorkIcon from '@mui/icons-material/HomeWork';                      //
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';  // Admin Page
 import EventIcon from '@mui/icons-material/Event';                            // Schedular Page
 import DataUsageIcon from '@mui/icons-material/DataUsage';                    // Overview Page
+import PersonIcon from '@mui/icons-material/Person';
 //import ExpandLess from '@mui/icons-material/ExpandLess';
 //import ExpandMore from '@mui/icons-material/ExpandMore';
 
@@ -82,6 +83,13 @@ const HeaderNavMenu = ({btnStyle}) => {
           primary='Admin Tools'
           to='/admin'
           icon={<AdminPanelSettingsIcon />}
+          onClick={handleMenuClose}
+        />
+
+        <MenuItemLink
+          primary='Student Portal'
+          to='/portal'
+          icon={<PersonIcon />}
           onClick={handleMenuClose}
         />
 
