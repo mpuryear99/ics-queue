@@ -15,6 +15,11 @@ function delay(ms=2500) {
   return new Promise(r => setTimeout(r, 2500));
 }
 
+
+/**
+ * 
+ * @param {import('express').Application} app
+ */
 module.exports = function(app) {
   if (process.env.NODE_ENV === 'production') {
     throw new Error("Mock API running in production.");
@@ -49,6 +54,31 @@ module.exports = function(app) {
       await delay();
       let _id = req.params[0];
       res.json(appointments_mock.find(x => x._id === _id));
+    });
+
+    // appointments/add
+    app.post('api/appointments/add', async (req, res) => {
+      await delay(250);
+      let data = {
+        '_id':       randomUUID(),
+        'user_id':   req.query['name'],
+        'machine_id': req.query['machine_id'],
+        'username':  req.query['username'],
+        'startTime': req.query['startTime'],
+        'endTime':   req.query['endTime']
+      }
+      appointments_mock.push(data);
+      res.status(201).send(data._id); //OK
+    });
+
+    // appointments/add/post
+    app.post('api/appointments/add/post', async (req, res) => {
+      await delay(250);
+      let data = req.body;
+      console.log(data);
+      data._id = randomUUID();
+      appointments_mock.push(data);
+      res.status(201).send(data._id); //OK
     });
 
     //#endregion
