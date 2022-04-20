@@ -90,17 +90,15 @@ class DBService {
    * @param {String} query.machine_id
    * @param {String} query.user_id
    * @param {Boolean} [checkOnly]
-   * @return {Array.<Object>|Boolean} List of appointments matching query, or true/false if checkOnly
+   * @return {Promise<Array.<Object>|Boolean>} List of appointments matching query, or true/false if checkOnly
    */
   async getAppointmentsByQuery(query, checkOnly=false) {
-    let url = new URL("api/appointments/query");
-    for (let item in query)
-      url.searchParams.append(item, query[item]);
+    let searchParams = new URLSearchParams(query);
     if (checkOnly)
-      url.searchParams.append('checkOnly', 'true');
+      searchParams.append('checkOnly', 'true');
 
     try {
-      var res = await fetch(url);
+      var res = await fetch("api/appointments/query?" + searchParams.toString());
 
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
@@ -130,7 +128,7 @@ class DBService {
    * @param {String} appointment.username
    * @param {Number} appointment.startTime
    * @param {Number} appointment.endTime
-   * @return {String|undefined} _id of posted object if successful; undefined on error.
+   * @return {Promise<String|undefined>} _id of posted object if successful; undefined on error.
    */
     async postAppointment(appointment) {
       var getParams = ({ user_id, machine_id, username, startTime, endTime }) => 

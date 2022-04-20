@@ -8,17 +8,19 @@
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { randomUUID } = require('crypto');
+const express = require('express');
+
 const machines_json = require("./data/dev/machines.json");
 const appointments_mock = [];
 
 function delay(ms=2500) {
-  return new Promise(r => setTimeout(r, 2500));
+  return new Promise(r => setTimeout(r, ms));
 }
 
 
 /**
  * 
- * @param {import('express').Application} app
+ * @param {express.Application} app
  */
 module.exports = function(app) {
   if (process.env.NODE_ENV === 'production') {
@@ -26,9 +28,10 @@ module.exports = function(app) {
   }
 
   if (process.env.REACT_APP_MOCK_API === 'true') {
-    
+
     //#region Mock API Calls
-    
+    app.use(express.json());
+
     // machines
     app.get('/api/machines', async (req, res) => {
       await delay();
@@ -36,9 +39,9 @@ module.exports = function(app) {
     });
 
     // machines/<id>
-    app.get('/api/machines/*', async (req, res) => {
+    app.get('/api/machines/:id', async (req, res) => {
       await delay();
-      let _id = req.params[0];
+      let _id = req.params["id"];
       res.json(machines_json.find(x => x._id === _id));
     });
 
@@ -49,15 +52,8 @@ module.exports = function(app) {
       res.json(appointments_mock);
     });
 
-    // appointments/<id>
-    app.get('/api/appointments/*', async (req, res) => {
-      await delay();
-      let _id = req.params[0];
-      res.json(appointments_mock.find(x => x._id === _id));
-    });
-
     // appointments/add
-    app.post('api/appointments/add', async (req, res) => {
+    app.post('/api/appointments/add', async (req, res) => {
       await delay(250);
       let data = {
         '_id':       randomUUID(),
@@ -72,13 +68,47 @@ module.exports = function(app) {
     });
 
     // appointments/add/post
-    app.post('api/appointments/add/post', async (req, res) => {
+    app.post('/api/appointments/add/post', async (req, res) => {
       await delay(250);
       let data = req.body;
-      console.log(data);
       data._id = randomUUID();
       appointments_mock.push(data);
-      res.status(201).send(data._id); //OK
+      res.status(201).send(data._id); //Created
+    });
+
+    // appointments/query
+    app.get('/api/appointments/query', async (req, res) => {
+      await delay(250);
+      resList = [...appointments_mock];
+
+      if (req.query.machine_id != null)
+        resList = resList.filter(a => a.machine_id == req.query.machine_id);
+      if (req.query.user_id != null)
+        resList = resList.filter(a => a.user_id == req.query.user_id);
+      if (req.query.startBefore != null)
+        resList = resList.filter(a => a.startTime < req.query.startBefore);
+      if (req.query.startAfter != null)
+        resList = resList.filter(a => a.startTime > req.query.startAfter);
+      if (req.query.endBefore != null)
+        resList = resList.filter(a => a.endTime < req.query.endBefore);
+      if (req.query.endAfter != null)
+        resList = resList.filter(a => a.endTime > req.query.endAfter);
+
+      if (req.query.checkOnly != null) {
+        res.set('Content-Type', 'text/html');
+        res.send((resList.length > 1).toString());
+      }
+      else {
+        res.set('Content-Type', 'application/json');
+        res.json(resList);
+      }
+    });
+
+    // appointments/<id>
+    app.get('/api/appointments/:id', async (req, res) => {
+      await delay();
+      let _id = req.params["id"];
+      res.json(appointments_mock.find(x => x._id === _id));
     });
 
     //#endregion
