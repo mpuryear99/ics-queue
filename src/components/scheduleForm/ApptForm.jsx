@@ -8,16 +8,17 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import FormHelperText from "@mui/material/FormHelperText";
+//import FormHelperText from "@mui/material/FormHelperText";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import LoadingButton from "@mui/lab/LoadingButton";
+import Alert from "@mui/material/Alert";
 // MUI Lab
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterMoment from '@mui/lab/AdapterMoment';
 import DatePicker from '@mui/lab/DatePicker';
-// import TimePicker from '@mui/lab/TimePicker';
 // Moment
-import moment from "moment";
+import moment from "moment-timezone";
 
 
 function generateTimes(start, end, step) {
@@ -32,8 +33,42 @@ function generateTimes(start, end, step) {
   return times;
 }
 
+function durationToString(t) {
+  let h = t.hours().toString();
+  let m =  t.minutes().toString().padStart(2,0);
+  return `${h} hr, ${m} min`;
+}
+
+function combineDateTime(date, time) {
+  let newDate = moment(date.clone()).tz("America/New_York", true);
+  newDate.set({
+    hour: time.get('hour'),
+    minute: time.get('minute'),
+    second: 0, //time.get('second'),
+    millisecond: 0, //time.get('millisecond'),
+  });
+  return newDate;
+}
+
+function checkForApptCollision(appt1, appt2) {
+  return (appt1.startTime < appt2.endTime && appt2.startTime < appt1.endTime);
+}
+
+function createApptFromForm(formData) {
+  let t1 = combineDateTime(formData.date, formData.time);
+  let t2 = t1.clone().add(formData.duration);
+  let appt = {
+    machine_id: formData.machine._id,
+    user_id: "625e2d8636e9dfe23304068e",
+    username: "user1",
+    startTime: t1.unix(),
+    endTime: t2.unix(),
+  }
+  return appt;
+}
 
 const ApptForm = () => {
+  //#region useState hooks
   const [formData, setFormData] = React.useState({
     machine: null,
     duration: '',
@@ -49,14 +84,19 @@ const ApptForm = () => {
 
   const [machineList, setMachineList] = React.useState(undefined);
 
-  React.useEffect(async () => {
-    let ml = await DBService.getMachines();
-    setMachineList(ml);
-  }, []);
+  const [apptList, setApptList] = React.useState([]);
+
+  const [statusInfo, setStatusInfo] = React.useState({
+    canSubmit: false,
+    submitPending: false,
+    status: null,
+    message: ""
+  });
+  //#endregion
 
   let timeOptionMenuItems = React.useMemo(() => {
-    let minTime = moment("0800", "hmm");
-    let maxTime = moment("1700", "hmm");
+    let minTime = moment.tz("0800", "hmm", "America/New_York");
+    let maxTime = moment.tz("1700", "hmm", "America/New_York");
     // NOTE: Parameters minTime, maxTime cannot be at the root of this component.
     //  If you do this, the params change each render causing this memo to run creating all new Moment objects.
     //  This is a problem because the Moment objects created here are used as MenuItems in a <Select>.
@@ -66,10 +106,54 @@ const ApptForm = () => {
     //  If list is regenerated, the value associated with the <Select> (formData.value) needs a new valid value or "".
 
     let times = generateTimes(minTime, maxTime, { minutes: 30 });
-    let items = times.map(t => <MenuItem key={t.format().toString()} value={t}>{t.format("h:mm A").toString()}</MenuItem>)
+    let items = times.map(t => <MenuItem key={t.format()} value={t}>{t.format("h:mm A")}</MenuItem>)
     return items;
   }, []);
 
+  let durationMenuItems = React.useMemo(() => {
+    let minDur = moment.duration(30, "minutes");
+    let maxDur = moment.duration(8, "hours");
+    let step   = moment.duration(30, "minutes");
+
+    let times = generateTimes(minDur, maxDur, step);
+    let items = times.map(t => (<MenuItem key={t.toString()} value={t}>{durationToString(t)}</MenuItem>));
+    return items;
+  }, []);
+
+  // Get machine list
+  React.useLayoutEffect(() => {
+    let fetchData = async () => {
+      let ml = await DBService.getMachines();
+      setMachineList(ml);
+    };
+    fetchData();
+  }, []);
+
+  // Get appointment list
+  React.useLayoutEffect(() => {
+    if (formData.machine == null || !moment.isMoment(formData.date)) {
+      setApptList([]);
+      return;
+    }
+
+    let date = moment(formData.date.clone()).startOf('day').tz("America/New_York", true);
+    let query = {
+      startAfter: date.unix(),
+      startBefore: date.clone().add(1, 'days').unix(),
+      machine_id: formData.machine._id
+    }
+    DBService.getAppointmentsByQuery(query)
+  }, [formData.machine, formData.date])
+
+
+  // Verify all schedule form info
+  React.useLayoutEffect(() => {
+    let fieldsValid = formData.machine != null
+      && moment.isMoment(formData.time)
+      && moment.isMoment(formData.date)
+      && moment.isDuration(formData.duration);
+    setStatusInfo(s => ({...s, canSubmit: fieldsValid}))
+  }, [formData]);
 
   const handleDateError = (err) => {
     let valid = (err === null);
@@ -96,7 +180,10 @@ const ApptForm = () => {
     newVS.allValid = Object.values(newVS).every(x => x === true);
     setValidStatus(newVS);
   }
-  
+
+
+  //#region Change handlers & submit handler
+
   /**
    * Callback fired when the machine value changes for {@link Autocomplete.onChange}.
    * @param {React.SyntheticEvent} event The event source of the callback.
@@ -143,8 +230,53 @@ const ApptForm = () => {
     setFormData(fd);
   }
 
+  const handleSubmit = (event) => {
+    // Create appt from form data
+    try {
+      var appt = createApptFromForm(formData)
+    } catch (e) {
+      setStatusInfo({...statusInfo,
+        status: "error",
+        message: `Appointment submittion error. (${e.message})`,
+      });
+      return;
+    }
+
+    // Check for appt collision with other appt for selected day
+    let apptTimeValid = apptList.length === 0 || apptList.every((testAppt) => !checkForApptCollision(appt, testAppt));
+    if (!apptTimeValid) {
+      setStatusInfo({...statusInfo,
+        status: "warning",
+        message: "Appointment timeslot not available.",
+      });
+      return;
+    }
+
+    // Attempt to submit appt
+    setStatusInfo({...statusInfo, submitPending: true});
+    let finalStatus = {...statusInfo, submitPending: false}
+    DBService.postAppointment(appt)
+      .then((_id) => {
+        if (_id == null)
+          throw new Error("Unable to submit appointment.");
+        appt._id = _id;
+        setApptList([...apptList, appt]);
+        finalStatus.status = "success";
+        finalStatus.message = "Appointment submitted. Feel free to submit another."
+      })
+      .catch((e) => {
+        finalStatus.status = "error";
+        finalStatus.message = e.toString();
+      })
+      .finally(() => {
+        setStatusInfo(finalStatus);
+      });
+  }
+
+  //#endregion
+
   return (
-    <form>
+    <form onSubmit={(event) => event.preventDefault()}>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={machineList === undefined}
@@ -172,16 +304,10 @@ const ApptForm = () => {
           value={formData.duration}
           onChange={handleDurationChange}
         >
-          <MenuItem key={30} value={30}>0:30</MenuItem>
-          <MenuItem key={60} value={60}>1:00</MenuItem>
-          <MenuItem key={90} value={90}>1:30</MenuItem>
-          <MenuItem key={120} value={120}>2:00</MenuItem>
-          <MenuItem key={150} value={150}>2:30</MenuItem>
-          <MenuItem key={180} value={180}>3:00</MenuItem>
+          {durationMenuItems}
         </Select>
-        <FormHelperText>Format: (H:MM)</FormHelperText>
       </FormControl>
-      
+
       <FormControl fullWidth sx={{m:1}}>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DatePicker
@@ -208,6 +334,25 @@ const ApptForm = () => {
           {timeOptionMenuItems}
         </Select>
       </FormControl>
+
+      <LoadingButton
+        sx={{m:1}}
+        loading={statusInfo.submitPending}
+        variant="contained"
+        disabled={!statusInfo.canSubmit}
+        //type="submit"
+        //onSubmit
+        onClick={handleSubmit}
+      >
+        Submit Appointment
+      </LoadingButton>
+
+      <Alert
+        sx={{m:1, display: (statusInfo.status == null ? "none" : "default")}}
+        severity={statusInfo.status || "info"}
+      >
+        {statusInfo.message}
+      </Alert>
     </form>
   );
 }
