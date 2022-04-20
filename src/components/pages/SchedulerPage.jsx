@@ -1,10 +1,12 @@
 import React from "react";
+//import AppointmentSelector from "../scheduleForm/AppointmentSelector";
+import ApptForm from "../scheduleForm/ApptForm";
 
 
 const SchedulerPage = () => {
   return(
     <div>
-      <h1>Scheduler Page</h1>
+      <ApptForm />
     </div>
   )
 };
