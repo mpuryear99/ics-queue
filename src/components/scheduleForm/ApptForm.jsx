@@ -40,7 +40,7 @@ function durationToString(t) {
 }
 
 function combineDateTime(date, time) {
-  let newDate = moment(date.clone()).tz("America/New_York", true);
+  let newDate = moment(date).tz("America/New_York", true);
   newDate.set({
     hour: time.get('hour'),
     minute: time.get('minute'),
@@ -72,14 +72,8 @@ const ApptForm = () => {
   const [formData, setFormData] = React.useState({
     machine: null,
     duration: '',
-    date: '',
+    date: null,
     time: '',
-  });
-
-  const [validStatus, setValidStatus] = React.useState({
-    dateValid: true,
-    timeValid: true,
-    allValid: true,
   });
 
   const [machineList, setMachineList] = React.useState(undefined);
@@ -87,6 +81,7 @@ const ApptForm = () => {
   const [apptList, setApptList] = React.useState([]);
 
   const [statusInfo, setStatusInfo] = React.useState({
+    dateValid: true,
     canSubmit: false,
     submitPending: false,
     status: null,
@@ -122,67 +117,55 @@ const ApptForm = () => {
 
   // Get machine list
   React.useLayoutEffect(() => {
-    let fetchData = async () => {
+    (async () => {
       let ml = await DBService.getMachines();
       setMachineList(ml);
-    };
-    fetchData();
+    })();
   }, []);
 
   // Get appointment list
   React.useLayoutEffect(() => {
-    if (formData.machine == null || !moment.isMoment(formData.date)) {
+    if (formData.machine == null || !statusInfo.dateValid || !moment.isMoment(formData.date)) {
       setApptList([]);
       return;
     }
 
-    let date = moment(formData.date.clone()).startOf('day').tz("America/New_York", true);
+    let date = moment(formData.date).startOf('day').tz("America/New_York", true);
     let query = {
       startAfter: date.unix(),
-      startBefore: date.clone().add(1, 'days').unix(),
+      startBefore: date.add(1, 'days').unix(),
       machine_id: formData.machine._id
     }
     DBService.getAppointmentsByQuery(query)
-  }, [formData.machine, formData.date])
+      .then(appts => {
+        if (appts === undefined) {
+          alert("Warning: Unable to query booked appointments for selected data/machine. Displayed appointments may be inaccurate.");
+        }
+        setApptList(appts ?? []);
+      });
+  }, [formData.machine, formData.date, statusInfo.dateValid])
 
 
   // Verify all schedule form info
   React.useLayoutEffect(() => {
     let fieldsValid = formData.machine != null
+      && statusInfo.dateValid
       && moment.isMoment(formData.time)
       && moment.isMoment(formData.date)
       && moment.isDuration(formData.duration);
     setStatusInfo(s => ({...s, canSubmit: fieldsValid}))
-  }, [formData]);
+  }, [formData, statusInfo.dateValid]);
+
+
+  //#region Change, Error, & Submit Handlers
 
   const handleDateError = (err) => {
     let valid = (err === null);
-    let status = {
-      ...validStatus,
-      dateValid: valid
-    };
-    setValidStatus(status);
+    setStatusInfo(s => ({
+      ...s,
+      dateValid: valid,
+    }));
   }
-
-  const handleDateTimeError = (field, err) => {
-    let isValid = (err === null);
-    let newVS = {...validStatus, allValid: true};
-    switch (field) {
-      case "date":
-        newVS.dateValid = isValid;
-        break;
-      case "time":
-        newVS.timeValid = isValid;
-        break;
-      default:
-        return;
-    }
-    newVS.allValid = Object.values(newVS).every(x => x === true);
-    setValidStatus(newVS);
-  }
-
-
-  //#region Change handlers & submit handler
 
   /**
    * Callback fired when the machine value changes for {@link Autocomplete.onChange}.
@@ -195,39 +178,31 @@ const ApptForm = () => {
     if (reason !== "selectOption" && reason !== "clear")
       return;
 
-    let fd = {
-      ...formData,
+    setFormData(fd => ({
+      ...fd,
       machine: value,
-      date: '',
-      time: '',
-    }
-    setFormData(fd);
+    }));
   }
 
   const handleDurationChange = (event) => {
-    let fd = {
-      ...formData,
+    setFormData(fd => ({
+      ...fd,
       duration: event.target.value,
-      time: '',
-    }
-    setFormData(fd);
+    }));
   }
 
   const handleDateChange = (newValue) => {
-    let fd = {
-      ...formData,
+    setFormData(fd => ({
+      ...fd,
       date: newValue,
-      time: '',
-    }
-    setFormData(fd);
+    }));
   }
 
   const handleTimeChange = (event) => {
-    let fd = {
-      ...formData,
-      time: event.target.value,
-    }
-    setFormData(fd);
+    setFormData(fd => ({
+      ...fd,
+      time: event.target.value
+    }));
   }
 
   const handleSubmit = (event) => {
@@ -235,26 +210,26 @@ const ApptForm = () => {
     try {
       var appt = createApptFromForm(formData)
     } catch (e) {
-      setStatusInfo({...statusInfo,
+      setStatusInfo(s => ({...s,
         status: "error",
         message: `Appointment submittion error. (${e.message})`,
-      });
+      }));
       return;
     }
 
     // Check for appt collision with other appt for selected day
     let apptTimeValid = apptList.length === 0 || apptList.every((testAppt) => !checkForApptCollision(appt, testAppt));
     if (!apptTimeValid) {
-      setStatusInfo({...statusInfo,
+      setStatusInfo(s => ({...s,
         status: "warning",
         message: "Appointment timeslot not available.",
-      });
+      }));
       return;
     }
 
     // Attempt to submit appt
-    setStatusInfo({...statusInfo, submitPending: true});
-    let finalStatus = {...statusInfo, submitPending: false}
+    setStatusInfo(s => ({...s, submitPending: true}));
+    let finalStatus = {...statusInfo, submitPending: false};
     DBService.postAppointment(appt)
       .then((_id) => {
         if (_id == null)
@@ -276,7 +251,7 @@ const ApptForm = () => {
   //#endregion
 
   return (
-    <form onSubmit={(event) => event.preventDefault()}>
+    <div>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={machineList === undefined}
@@ -314,7 +289,7 @@ const ApptForm = () => {
             label="Date"
             inputFormat="MM/DD/yyyy"
             mask="__/__/____"
-            minDate={moment().startOf("day")}
+            minDate={moment().startOf("day").tz("America/New_York", true)}
             value={formData.date}
             onChange={handleDateChange}
             onError={handleDateError}
@@ -353,7 +328,7 @@ const ApptForm = () => {
       >
         {statusInfo.message}
       </Alert>
-    </form>
+    </div>
   );
 }
 
