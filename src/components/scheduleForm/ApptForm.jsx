@@ -11,14 +11,21 @@ import TextField from "@mui/material/TextField";
 //import FormHelperText from "@mui/material/FormHelperText";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import LoadingButton from "@mui/lab/LoadingButton";
 import Alert from "@mui/material/Alert";
+import Grid from "@mui/material/Grid";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
 // MUI Lab
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterMoment from '@mui/lab/AdapterMoment';
 import DatePicker from '@mui/lab/DatePicker';
+import LoadingButton from "@mui/lab/LoadingButton";
 // Moment
 import moment from "moment-timezone";
+
+const TZ_NY = "America/New_York";
 
 
 function generateTimes(start, end, step) {
@@ -40,7 +47,7 @@ function durationToString(t) {
 }
 
 function combineDateTime(date, time) {
-  let newDate = moment(date).tz("America/New_York", true);
+  let newDate = moment(date).tz(TZ_NY, true);
   newDate.set({
     hour: time.get('hour'),
     minute: time.get('minute'),
@@ -67,6 +74,18 @@ function createApptFromForm(formData) {
   return appt;
 }
 
+const ApptTimeListItem = ({appt}) => {
+  let t1 = moment.unix(appt.startTime).tz(TZ_NY).format("h:mm A");
+  let t2 = moment.unix(appt.endTime).tz(TZ_NY).format("h:mm A");
+  let timespan = `${t1} - ${t2}`;
+
+  return (
+    <ListItem key={appt._id ?? appt}>
+      <ListItemText primary={timespan}/>
+    </ListItem>
+  );
+}
+
 const ApptForm = () => {
   //#region useState hooks
   const [formData, setFormData] = React.useState({
@@ -90,8 +109,8 @@ const ApptForm = () => {
   //#endregion
 
   let timeOptionMenuItems = React.useMemo(() => {
-    let minTime = moment.tz("0800", "hmm", "America/New_York");
-    let maxTime = moment.tz("1700", "hmm", "America/New_York");
+    let minTime = moment.tz("0800", "hmm", TZ_NY);
+    let maxTime = moment.tz("1700", "hmm", TZ_NY);
     // NOTE: Parameters minTime, maxTime cannot be at the root of this component.
     //  If you do this, the params change each render causing this memo to run creating all new Moment objects.
     //  This is a problem because the Moment objects created here are used as MenuItems in a <Select>.
@@ -130,7 +149,7 @@ const ApptForm = () => {
       return;
     }
 
-    let date = moment(formData.date).startOf('day').tz("America/New_York", true);
+    let date = moment(formData.date).startOf('day').tz(TZ_NY, true);
     let query = {
       startAfter: date.unix(),
       startBefore: date.add(1, 'days').unix(),
@@ -140,8 +159,10 @@ const ApptForm = () => {
       .then(appts => {
         if (appts === undefined) {
           alert("Warning: Unable to query booked appointments for selected data/machine. Displayed appointments may be inaccurate.");
+          appts = []
         }
-        setApptList(appts ?? []);
+        appts = appts.sort((a,b) => (a.startTime < b.startTime ? -1 : 1));
+        setApptList(appts);
       });
   }, [formData.machine, formData.date, statusInfo.dateValid])
 
@@ -251,84 +272,102 @@ const ApptForm = () => {
   //#endregion
 
   return (
-    <div>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={machineList === undefined}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+    <Grid container spacing={2} columns={16}>
 
-      <Autocomplete
-        fullWidth
-        sx={{m:1}}
-        disablePortal
-        autoHighlight
-        options={(machineList ?? [])}
-        value={formData.machine}
-        onChange={handleMachineChange}
-        getOptionLabel={(option) => option.name ?? option._id ?? option}
-        renderInput={(params) => <TextField {...params} label="Machine" />}
-      />
-
-      <FormControl fullWidth sx={{m:1}}>
-        <InputLabel id="duration-select-label">Length of Job</InputLabel>
-        <Select
-          labelId="duration-select-label"
-          label="Length of Job"
-          value={formData.duration}
-          onChange={handleDurationChange}
+      <Grid item xs={8} sx={{pr:1}}>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={machineList === undefined}
         >
-          {durationMenuItems}
-        </Select>
-      </FormControl>
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
-      <FormControl fullWidth sx={{m:1}}>
-        <LocalizationProvider dateAdapter={AdapterMoment}>
-          <DatePicker
-            label="Date"
-            inputFormat="MM/DD/yyyy"
-            mask="__/__/____"
-            minDate={moment().startOf("day").tz("America/New_York", true)}
-            value={formData.date}
-            onChange={handleDateChange}
-            onError={handleDateError}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-      </FormControl>
+        <Autocomplete
+          fullWidth
+          sx={{m:1}}
+          disablePortal
+          autoHighlight
+          options={(machineList ?? [])}
+          value={formData.machine}
+          onChange={handleMachineChange}
+          getOptionLabel={(option) => option.name ?? option._id ?? option}
+          renderInput={(params) => <TextField {...params} label="Machine" />}
+        />
 
-      <FormControl fullWidth sx={{m:1}}>
-        <InputLabel id="time-start-select-label">Time</InputLabel>
-        <Select
-          labelId="time-start-select-label"
-          label="Time"
-          value={formData.time}
-          onChange={handleTimeChange}
+        <FormControl fullWidth sx={{m:1}}>
+          <InputLabel id="duration-select-label">Length of Job</InputLabel>
+          <Select
+            labelId="duration-select-label"
+            label="Length of Job"
+            value={formData.duration}
+            onChange={handleDurationChange}
+          >
+            {durationMenuItems}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth sx={{m:1}}>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DatePicker
+              label="Date"
+              inputFormat="MM/DD/yyyy"
+              mask="__/__/____"
+              minDate={moment().startOf("day").tz(TZ_NY, true)}
+              value={formData.date}
+              onChange={handleDateChange}
+              onError={handleDateError}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </FormControl>
+
+        <FormControl fullWidth sx={{m:1}}>
+          <InputLabel id="time-start-select-label">Time</InputLabel>
+          <Select
+            labelId="time-start-select-label"
+            label="Time"
+            value={formData.time}
+            onChange={handleTimeChange}
+          >
+            {timeOptionMenuItems}
+          </Select>
+        </FormControl>
+
+        <LoadingButton
+          sx={{m:1}}
+          loading={statusInfo.submitPending}
+          variant="contained"
+          disabled={!statusInfo.canSubmit}
+          //type="submit"
+          //onSubmit
+          onClick={handleSubmit}
         >
-          {timeOptionMenuItems}
-        </Select>
-      </FormControl>
+          Submit Appointment
+        </LoadingButton>
 
-      <LoadingButton
-        sx={{m:1}}
-        loading={statusInfo.submitPending}
-        variant="contained"
-        disabled={!statusInfo.canSubmit}
-        //type="submit"
-        //onSubmit
-        onClick={handleSubmit}
-      >
-        Submit Appointment
-      </LoadingButton>
+        <Alert
+          sx={{m:1, display: (statusInfo.status == null ? "none" : "default")}}
+          severity={statusInfo.status || "info"}
+        >
+          {statusInfo.message}
+        </Alert>
+      </Grid>
 
-      <Alert
-        sx={{m:1, display: (statusInfo.status == null ? "none" : "default")}}
-        severity={statusInfo.status || "info"}
-      >
-        {statusInfo.message}
-      </Alert>
-    </div>
+      <Grid item xs={8}>
+        <Paper
+          sx={{ml:1, height: '100%'}}
+          elevation={2}
+        >
+          <List
+            sx={{m:1, p:0.5}}
+            subheader="Unavailable Timeslots"
+          >
+            {apptList.map(a => (<ApptTimeListItem key={a._id} appt={a}/>))}
+          </List>
+        </Paper>
+      </Grid>
+
+    </Grid>
   );
 }
 
