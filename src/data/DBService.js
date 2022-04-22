@@ -1,6 +1,9 @@
 // API & Database service wrapper
 
 class DBService {
+
+  //#region Machines
+
   /**
    * Read machine list from database.
    *
@@ -39,6 +42,9 @@ class DBService {
     return data;
   }
 
+  //#endregion
+
+  //#region Appointments
 
   /**
    * Read appointments list from database.
@@ -130,34 +136,65 @@ class DBService {
    * @param {Number} appointment.endTime
    * @return {Promise<String|undefined>} _id of posted object if successful; undefined on error.
    */
-    async postAppointment(appointment) {
-      var getParams = ({ user_id, machine_id, username, startTime, endTime }) => 
-                      ({ user_id, machine_id, username, startTime, endTime });
-      let cleanAppt = getParams(appointment);
+  async postAppointment(appointment) {
+    var getParams = ({ user_id, machine_id, username, startTime, endTime }) => 
+                    ({ user_id, machine_id, username, startTime, endTime });
+    let cleanAppt = getParams(appointment);
 
-      for (let item in cleanAppt) {
-        if (cleanAppt[item] === undefined)
-          throw new Error(`${item} is undefined`);
-      }
-
-      try {
-        var res = await fetch('/api/appointments/add/post', {
-          method: 'POST',
-          headers: {
-            'Accept': 'text/html',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(cleanAppt)
-        });
-
-        var data = await res.text()
-
-      } catch (e) {
-        console.error(e);
-        return undefined;
-      }
-      return data;
+    for (let item in cleanAppt) {
+      if (cleanAppt[item] === undefined)
+        throw new Error(`${item} is undefined`);
     }
+
+    try {
+      var res = await fetch('/api/appointments/add/post', {
+        method: 'POST',
+        headers: {
+          'Accept': 'text/html',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cleanAppt)
+      });
+
+      var data = await res.text()
+
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  }
+
+
+  /**
+   * Get appointment with cooresponding _id from database
+   *
+   * @param {String} id
+   * @return {Boolean|undefined} True if deleted
+   */
+  async deleteAppointmentByID(id) {
+    try {
+      var res = await fetch(`api/appointments/${id}/delete`, {
+        method: "DELETE"
+      });
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      var data = await res.text();
+      data = !data.includes("0")
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  }
+
+  //#endregion
+
+  //#region Users
+
+
+  //#endregion
+
 }
 
 var dbservice = new DBService();

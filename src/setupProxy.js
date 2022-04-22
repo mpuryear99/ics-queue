@@ -111,6 +111,16 @@ module.exports = function(app) {
       res.json(appointments_mock.find(x => x._id === _id));
     });
 
+    // appointments/<id>/delete
+    app.delete('/api/appointments/:id/delete', async (req, res) => {
+      await delay(250);
+      let _id = req.params["id"];
+      let numDeleted = appointments_mock.length;
+      appointments_mock = appointments_mock.filter(x => !(x._id === _id));
+      numDeleted -= appointments_mock.length
+      res.send(str(numDeleted));
+    });
+
     //#endregion
 
   // Create a middlewate proxy to route api calls to the backend
