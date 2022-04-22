@@ -9,9 +9,7 @@ function rand(min, max) {
     )
   }
 
-let machines = []
-let newobj = {}
-newobj.machines = orig.machines.flatMap(x => {
+let machines = orig.machines.flatMap(x => {
     const { number, ...entry } = x;
     
     let ml = []
@@ -25,10 +23,9 @@ newobj.machines = orig.machines.flatMap(x => {
       
       ml.push(m)
     }
-
-
+    
     return (ml)
 })
 
-jsonobj = JSON.stringify(newobj)
+jsonobj = JSON.stringify(machines)
 fs.writeFileSync('./machines.json', jsonobj, 'utf8');
