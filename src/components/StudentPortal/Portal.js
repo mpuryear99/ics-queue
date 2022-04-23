@@ -15,7 +15,7 @@ export default function Portal() {
             }}>
 
             <div className="ScheduledApps">
-                <ScheduledApps name = "Tyler"/>
+                <ScheduledApps name = "user1"/>
             </div>
         
 

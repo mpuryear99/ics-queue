@@ -1,70 +1,88 @@
 import React from "react";
 import Box from "@mui/material/Box";
-
+import List from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import DBService from "../../data/DBService";
 import moment from "moment";
+import { IconButton, ListItem } from "@mui/material";
 
+export default function ScheduledApps({ name }) {
+  //  const appointmentList = React.useMemo(() => DBService.getAppointments(),  []);
+  //  const machineList = React.useMemo(() => DBService.getMachines(),  []);
+  //  console.log(appointmentList)
 
-export default function ScheduledApps({name}) {
-   const appointmentList = React.useMemo(() => DBService.getAppointments(),  []);
-   const machineList = React.useMemo(() => DBService.getMachines(),  []);
-   const person = appointmentList.filter(function (appointments)
-   {
-       return appointments.name === name;
-   })
+  const [machineList, setMachineList] = React.useState([]);
+  React.useEffect(async () => {
+    let m2 = await DBService.getMachines();
+    if (m2 !== undefined) {
+      setMachineList(m2);
+    }
+  }, []);
 
-   function deleteEvent()
-   {
-      
-   }
+  const [appointmentList, setAppointmentList] = React.useState([]);
+  React.useEffect(async () => {
+    let ml = await DBService.getAppointments();
+    if (ml !== undefined) {
+      setAppointmentList(ml);
+    }
+  }, []);
 
-   function machineName(machineID)
-   {
-      const name = machineList.filter(function (machine)
-        {
-          return machineID === machine._id
-        }
-      )
-      return name[0].name;
-   }
+  console.log("HerE");
+  console.log(machineList);
 
-   
+  //  const appts = await appointmentList.then(result => result.data);
+  //  console.log(appts)
+
+  //   const person = appointmentList.then(
+  //     function(value) {
+  //       console.log("HERE")
+  //       console.log(appointmentList)
+  //       console.log(value)
+  //       const person = value.filter(function (appointments)
+  //       {
+  //           return appointments.username === name;
+  //       })
+
+  //       console.log(person)
+  //       return (<h1>{person}</h1>);
+  //     }
+  //  )
+
+  function machineName(machineID) {
+    const name = machineList.filter(function (machine) {
+      return machineID === machine._id;
+    });
+    return name[0].name;
+  }
 
   return (
-  
     <div>
       <h2 style={{ padding: "0px 25px" }}>{name}'s Appointments</h2>
-      
-        {person.map(a => (
-          <div>
-            <Box
-            sx={{
-              p: 2,
-              background: "#f5f5f5",
-              width: "400px",
-              height: "180px",
-              margin: "20px",
-              border: "2px solid #000000",
-              alignItems: "center",
-              maxHeight: "100%",
-              overflow: "auto",
-            }}
-          >
+
+      {appointmentList.map((a) => (
         <div>
-          <h3>Machine: {machineName(a.machineID)}</h3>
-          <h3>Start Time: {moment(a.startTime).format('MMMM Do YYYY, h:mm:ss a')}</h3>
-          <h3>End Time: {moment(a.endTime).format('MMMM Do YYYY, h:mm:ss a')}</h3>
+          <List dense={false}>
+            <ListItem
+              secondaryAction={
+                <IconButton edge="end" aria-label="delete">
+                  <DeleteIcon />
+                </IconButton>
+              }
+            >
+              <ListItemText
+                primary={machineName(a.machine_id)}
+                secondary={
+                  moment(a.startTime).format("MMMM Do YYYY, h:mm:ss a") +
+                  " - " +
+                  moment(a.endTime).format("MMMM Do YYYY, h:mm:ss a")
+                }
+              />
+            </ListItem>
+          </List>
         </div>
-        </Box>
-        <button onClick={deleteEvent} style={{ position: "relative", left: "20px" }}>
-          Delete Appointment
-        </button>
-        </div>
-     
-        ))}
-
-      </div>
-
+      ))}
+    </div>
   );
 }
