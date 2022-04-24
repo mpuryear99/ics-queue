@@ -50,6 +50,12 @@ export default function ScheduledApps({ name }) {
   //     }
   //  )
 
+  function deleteAppt(id)
+  {
+    console.log("I want to delete" + id)
+  }
+
+
   function machineName(machineID) {
     const name = machineList.filter(function (machine) {
       return machineID === machine._id;
@@ -66,7 +72,7 @@ export default function ScheduledApps({ name }) {
           <List dense={false}>
             <ListItem
               secondaryAction={
-                <IconButton edge="end" aria-label="delete">
+                <IconButton edge="end" aria-label="delete" onClick={() => { console.log('onClick'); deleteAppt(a._id); }}>
                   <DeleteIcon />
                 </IconButton>
               }
