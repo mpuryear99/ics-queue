@@ -11,7 +11,7 @@ const { randomUUID } = require('crypto');
 const express = require('express');
 
 const machines_json = require("./data/dev/machines.json");
-const appointments_mock = [];
+var appointments_mock = [];
 
 function delay(ms=2500) {
   return new Promise(r => setTimeout(r, ms));
@@ -118,7 +118,7 @@ module.exports = function(app) {
       let numDeleted = appointments_mock.length;
       appointments_mock = appointments_mock.filter(x => !(x._id === _id));
       numDeleted -= appointments_mock.length
-      res.send(str(numDeleted));
+      res.send(numDeleted.toString());
     });
 
     //#endregion

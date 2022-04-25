@@ -170,7 +170,7 @@ class DBService {
    * Get appointment with cooresponding _id from database
    *
    * @param {String} id
-   * @return {Boolean|undefined} True if deleted
+   * @return {Boolean|undefined} True if deleted, False if not; undefined if error.
    */
   async deleteAppointmentByID(id) {
     try {
