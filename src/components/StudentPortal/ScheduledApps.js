@@ -1,119 +1,89 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import DBService from "../../data/DBService";
+import moment from "moment-timezone";
+
 import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText";
+import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import DBService from "../../data/DBService";
-import moment from "moment";
-import { IconButton, ListItem } from "@mui/material";
+
+const TZ_NY = "America/New_York";
 
 export default function ScheduledApps({ name }) {
-  //  const appointmentList = React.useMemo(() => DBService.getAppointments(),  []);
-  //  const machineList = React.useMemo(() => DBService.getMachines(),  []);
-  //  console.log(appointmentList)
 
-  const [machineList, setMachineList] = React.useState([]);
-  React.useEffect(async () => {
-    let m2 = await DBService.getMachines();
-    if (m2 !== undefined) {
-      setMachineList(m2);
-    }
-  }, []);
-
+  const [machinesDict, setMachinsDict] = React.useState({});
   const [appointmentList, setAppointmentList] = React.useState([]);
-  React.useEffect(async () => {
-    let ml = await DBService.getAppointments();
-    if (ml !== undefined) {
-      setAppointmentList(ml);
-    }
+
+  React.useEffect(() => {
+    (async () => {
+      let ml = await DBService.getMachines();
+      if (ml !== undefined) {
+        let md = {};
+        for (let m of ml) {
+          md[m._id] = m.name;
+        }
+        console.log(ml)
+        console.log(md)
+        setMachinsDict(md);
+      }
+    })();
   }, []);
-  // const [appointmentList, setAppointmentList] = React.useState([]);
-  // React.useEffect(() => {
-  //   (async () => {
-  //     let appts = await DBService.getAppointments();
-  //     if (appts !== undefined) {
-  //       setAppointmentList(appts);
-  //     }
-  //   })();
-  // }, []);
-
-  // const [machineList, setMachineList] = React.useState([]);
-  // React.useEffect(() => {
-  //   (async () => {
-  //     let m2 = await DBService.getMachines();
-  //     if (m2 !== undefined) {
-  //       setMachineList(m2);
-  //     }
-  //   })();
-  // }, []);
-
-  console.log(machineList);
-
-  //  const appts = await appointmentList.then(result => result.data);
-  //  console.log(appts)
-
-  //   const person = appointmentList.then(
-  //     function(value) {
-  //       console.log("HERE")
-  //       console.log(appointmentList)
-  //       console.log(value)
-  //       const person = value.filter(function (appointments)
-  //       {
-  //           return appointments.username === name;
-  //       })
-
-  //       console.log(person)
-  //       return (<h1>{person}</h1>);
-  //     }
-  //  )
-
-  function deleteAppt(id)
-  {
-    console.log("I want to delete" + id)
-
-    DBService.deleteAppointmentByID(id)
-
-  }
+  
+  React.useEffect(() => {
+    (async () => {
+      let appts = await DBService.getAppointments();
+      if (appts !== undefined) {
+        setAppointmentList(appts);
+      }
+    })();
+  }, []);
 
 
-  function machineName(machineID) {
-    const name = machineList.filter(function (machine) {
-      console.log(machineList.length)
+  const onClickDelete = async (apptID) => {
+    console.log("Attempting to delete " + apptID);
 
-      return machineID === machine._id;
-    });
-    return name[0].name;
+    await DBService.deleteAppointmentByID(apptID);
+
+    let appts = await DBService.getAppointments();
+    if (appts !== undefined) {
+      setAppointmentList(appts);
+    }
   }
 
   return (
-    <div>
-      <h2 style={{ padding: "0px 25px" }}>{name}'s Appointments</h2>
+    <>
+      {/* <h2 style={{ padding: "0px 25px" }}>{name}'s Appointments</h2> */}
 
-      <List dense={false}>
-      {appointmentList.map((a) => (
-        <div>
-          
-            <ListItem
-              secondaryAction={
-                <IconButton edge="end" aria-label="delete" onClick={() => { console.log('onClick'); deleteAppt(a._id); }}>
-                  <DeleteIcon />
-                </IconButton>
+      <List 
+        dense={false}
+        subheader={`${name}'s Appointments`}
+      >
+        {appointmentList.map((a) => (
+          <ListItem
+            key={a._id}
+            secondaryAction={
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={() => { onClickDelete(a._id); }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+          >
+            <ListItemText
+              primary={machinesDict[a.machine_id]}
+              secondary={
+                moment.unix(a.startTime).tz(TZ_NY).format("MMMM Do YYYY, h:mm:ss a") +
+                " - " +
+                moment.unix(a.endTime).tz(TZ_NY).format("MMMM Do YYYY, h:mm:ss a")
               }
-            >
-              <ListItemText
-                primary={machineName(a.machine_id)}
-                secondary={
-                  moment(a.startTime).format("MMMM Do YYYY, h:mm:ss a") +
-                  " - " +
-                  moment(a.endTime).format("MMMM Do YYYY, h:mm:ss a")
-                }
-              />
-            </ListItem>
-          
-        </div>
-      ))}
+            />
+          </ListItem>
+        ))}
       </List>
-    </div>
+    </>
   );
 }
