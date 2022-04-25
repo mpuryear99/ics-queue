@@ -10,10 +10,14 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const { randomUUID } = require('crypto');
 const express = require('express');
 
+/**@type {Array<Object>} */
 const machines_json = require("./data/dev/machines.json");
+/**@type {Array<Object>} */
+const users_json = require("./data/dev/users.json");
+/**@type {Array<Object>} */
 var appointments_mock = [];
 
-function delay(ms=2500) {
+function delay(ms=1500) {
   return new Promise(r => setTimeout(r, ms));
 }
 
@@ -119,6 +123,42 @@ module.exports = function(app) {
       appointments_mock = appointments_mock.filter(x => !(x._id === _id));
       numDeleted -= appointments_mock.length
       res.send(numDeleted.toString());
+    });
+
+
+    // users
+    app.get('/api/users', async (req, res) => {
+      await delay();
+      res.json(users_json);
+    });
+
+    // users/<id>
+    app.get('/api/users/:id', async (req, res) => {
+      await delay();
+      let _id = req.params["id"];
+      res.json(users_json.find(x => x._id === _id));
+    });
+
+    // users/add
+    app.post('/api/users/add', async (req, res) => {
+      await delay(250);
+      let data = req.body;
+      data._id = randomUUID();
+      users_json.push(data);
+      res.status(201).send(data._id); //Created
+    });
+
+    // users/<id>/delete
+    app.delete('/api/users/:id/delete', async (req, res) => {
+      await delay(250);
+      let _id = req.params["id"];
+      let idx = users_json.findIndex(u => u._id === _id);
+      if (idx > -1) {
+        users_json.splice(idx, 1)
+        res.send("1");
+      } else {
+        res.send("0");
+      }
     });
 
     //#endregion
