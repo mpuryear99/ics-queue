@@ -9,22 +9,29 @@ import OverviewPage from "components/pages/OverviewPage";
 import Admin from "components/Admin/Admin";
 import TempMachine from "components/Admin/Machines/TempMachine";
 
+import UserContext from "context/UserContext";
+
 function App() {
+  const [user, setUser] = React.useState(null);
+  const userProvider = React.useMemo(() => ({user, setUser}), [user, setUser]);
+
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<PageBase />}>
-          <Route path="" element={<HomePage />} />
-          <Route path="admin" element={<Admin />}>
-            <Route path=":machine" element={<TempMachine />} />
+      <UserContext.Provider value={userProvider}>
+        <Routes>
+          <Route path="/" element={<PageBase />}>
+            <Route path="" element={<HomePage />} />
+            <Route path="admin" element={<Admin />}>
+              <Route path=":machine" element={<TempMachine />} />
+            </Route>
+            <Route path="schedule" element={<SchedulerPage />} />
+            <Route path="overview" element={<OverviewPage />} />
           </Route>
-          <Route path="schedule" element={<SchedulerPage />} />
-          <Route path="overview" element={<OverviewPage />} />
-        </Route>
 
-        {/* Page not found route */}
-        <Route path="*" element={<Error404Page />} status={404} />
-      </Routes>
+          {/* Page not found route */}
+          <Route path="*" element={<Error404Page />} status={404} />
+        </Routes>
+      </UserContext.Provider>
     </BrowserRouter>
   );
 }
