@@ -28,8 +28,26 @@ export default function ScheduledApps({ name }) {
       setAppointmentList(ml);
     }
   }, []);
+  // const [appointmentList, setAppointmentList] = React.useState([]);
+  // React.useEffect(() => {
+  //   (async () => {
+  //     let appts = await DBService.getAppointments();
+  //     if (appts !== undefined) {
+  //       setAppointmentList(appts);
+  //     }
+  //   })();
+  // }, []);
 
-  console.log("HerE");
+  // const [machineList, setMachineList] = React.useState([]);
+  // React.useEffect(() => {
+  //   (async () => {
+  //     let m2 = await DBService.getMachines();
+  //     if (m2 !== undefined) {
+  //       setMachineList(m2);
+  //     }
+  //   })();
+  // }, []);
+
   console.log(machineList);
 
   //  const appts = await appointmentList.then(result => result.data);
@@ -53,11 +71,16 @@ export default function ScheduledApps({ name }) {
   function deleteAppt(id)
   {
     console.log("I want to delete" + id)
+
+    DBService.deleteAppointmentByID(id)
+
   }
 
 
   function machineName(machineID) {
     const name = machineList.filter(function (machine) {
+      console.log(machineList.length)
+
       return machineID === machine._id;
     });
     return name[0].name;
@@ -67,9 +90,10 @@ export default function ScheduledApps({ name }) {
     <div>
       <h2 style={{ padding: "0px 25px" }}>{name}'s Appointments</h2>
 
+      <List dense={false}>
       {appointmentList.map((a) => (
         <div>
-          <List dense={false}>
+          
             <ListItem
               secondaryAction={
                 <IconButton edge="end" aria-label="delete" onClick={() => { console.log('onClick'); deleteAppt(a._id); }}>
@@ -86,9 +110,10 @@ export default function ScheduledApps({ name }) {
                 }
               />
             </ListItem>
-          </List>
+          
         </div>
       ))}
+      </List>
     </div>
   );
 }
