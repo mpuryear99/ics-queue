@@ -1,0 +1,38 @@
+[
+    {
+        "_id": "0123456789abcdef00000001",
+        "netid": "user1",
+        "email": "user1@utk.edu",
+        "admin": false
+    },
+    {
+        "_id": "0123456789abcdef00000002",
+        "netid": "user2",
+        "email": "user2@utk.edu",
+        "admin": false
+    },
+    {
+        "_id": "0123456789abcdef00000003",
+        "netid": "user3",
+        "email": "user3@utk.edu",
+        "admin": false
+    },
+    {
+        "_id": "0123456789abcdef00000011",
+        "netid": "admin1",
+        "email": "admin1@utk.edu",
+        "admin": true
+    },
+    {
+        "_id": "0123456789abcdef00000012",
+        "netid": "admin2",
+        "email": "admin2@utk.edu",
+        "admin": true
+    },
+    {
+        "_id": "0123456789abcdef00000013",
+        "netid": "admin3",
+        "email": "admin3@utk.edu",
+        "admin": true
+    }
+]

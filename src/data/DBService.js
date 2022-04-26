@@ -1,13 +1,16 @@
 // API & Database service wrapper
 
-class DBService {
+/**
+ * Service object containing database operation methods.
+ */
+const DBService = {
 
   //#region Machines
 
   /**
    * Read machine list from database.
    *
-   * @return list of machine info objects
+   * @return {Promise<Array<Object>|undefined>} List of machine info objects
    */
   async getMachines() {
     try {
@@ -20,14 +23,14 @@ class DBService {
       return undefined;
     }
     return data;
-  }
+  },
 
 
   /**
    * Get machine with cooresponding _id from database
    *
    * @param {String} id
-   * @return Machine with _id
+   * @return {Promise<Object|undefined>} Machine with _id
    */
   async getMachineByID(id) {
     try {
@@ -40,16 +43,17 @@ class DBService {
       return undefined;
     }
     return data;
-  }
+  },
 
   //#endregion
+
 
   //#region Appointments
 
   /**
    * Read appointments list from database.
    *
-   * @return list of appointment objects
+   * @return {Promise<Array<Object>|undefined>} List of appointment objects
    */
   async getAppointments() {
     try {
@@ -62,14 +66,14 @@ class DBService {
       return undefined;
     }
     return data;
-  }
+  },
   
 
   /**
    * Get appointment with cooresponding _id from database
    *
    * @param {String} id
-   * @return Appointment with _id
+   * @return {Promise<Object|undefined>} Appointment with _id
    */
   async getAppointmentByID(id) {
     try {
@@ -82,7 +86,7 @@ class DBService {
       return undefined;
     }
     return data;
-  }
+  },
 
 
   /**
@@ -96,7 +100,7 @@ class DBService {
    * @param {String} query.machine_id
    * @param {String} query.user_id
    * @param {Boolean} [checkOnly]
-   * @return {Promise<Array.<Object>|Boolean>} List of appointments matching query, or true/false if checkOnly
+   * @return {Promise<Array<Object>|Boolean>} List of appointments matching query, or true/false if checkOnly
    */
   async getAppointmentsByQuery(query, checkOnly=false) {
     let searchParams = new URLSearchParams(query);
@@ -122,7 +126,7 @@ class DBService {
       return data === "true";
     }
     return data;
-  }
+  },
   
 
   /**
@@ -137,11 +141,11 @@ class DBService {
    * @return {Promise<String|undefined>} _id of posted object if successful; undefined on error.
    */
   async postAppointment(appointment) {
-    var getParams = ({ user_id, machine_id, username, startTime, endTime }) => 
+    let getParams = ({ user_id, machine_id, username, startTime, endTime }) => 
                     ({ user_id, machine_id, username, startTime, endTime });
     let cleanAppt = getParams(appointment);
 
-    for (let item in cleanAppt) {
+    for (let item of cleanAppt) {
       if (cleanAppt[item] === undefined)
         throw new Error(`${item} is undefined`);
     }
@@ -156,6 +160,9 @@ class DBService {
         body: JSON.stringify(cleanAppt)
       });
 
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+
       var data = await res.text()
 
     } catch (e) {
@@ -163,14 +170,14 @@ class DBService {
       return undefined;
     }
     return data;
-  }
+  },
 
 
   /**
-   * Get appointment with cooresponding _id from database
+   * Delete appointment with cooresponding _id from database
    *
-   * @param {String} id
-   * @return {Boolean|undefined} True if deleted
+   * @param {String} id _id of appointment to be deleted
+   * @return {Promise<Boolean|undefined>} True if deleted, False if not; undefined if error.
    */
   async deleteAppointmentByID(id) {
     try {
@@ -186,17 +193,116 @@ class DBService {
       return undefined;
     }
     return data;
-  }
+  },
 
   //#endregion
+
 
   //#region Users
 
+  /**
+   * Read users list from database.
+   *
+   * @return {Promise<Array<Object>|undefined>} list of user info objects
+   */
+  async getUsers() {
+    try {
+      var res = await fetch('api/users');
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      var data = await res.json();
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  },
+
+
+  /**
+   * Get user with cooresponding _id from database
+   *
+   * @param {String} id
+   * @return {Promise<Object|undefined>} User with _id
+   */
+  async getUserByID(id) {
+    try {
+      var res = await fetch(`api/users/${id}`);
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      var data = await res.json();
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  },
+
+
+  /**
+   * Post user to database
+   *
+   * @param {Object} user
+   * @param {String} user.netid
+   * @param {String} user.email
+   * @param {Boolean} user.admin
+   * @return {Promise<String|undefined>} _id of posted object if successful; undefined on error.
+   */
+  async postUser(user) {
+    let getParams = ({ netid, email, admin }) => ({ netid, email, admin });
+    let cleanUser = getParams(user);
+
+    for (let item of cleanUser) {
+      if (cleanUser[item] === undefined)
+        throw new Error(`${item} is undefined`);
+    }
+
+    try {
+      var res = await fetch('/api/users/add', {
+        method: 'POST',
+        headers: {
+          'Accept': 'text/html',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cleanUser)
+      });
+
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+
+      var data = await res.text()
+
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  },
+
+
+  /**
+   * Delete user with cooresponding _id from database
+   *
+   * @param {String} id _id of user to be deleted
+   * @return {Promise<Boolean|undefined>} True if deleted, False if not; undefined if error.
+   */
+  async deleteUserByID(id) {
+    try {
+      var res = await fetch(`api/users/${id}/delete`, {
+        method: "DELETE"
+      });
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      var data = await res.text();
+      data = !data.includes("0")
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  },
 
   //#endregion
-
 }
 
-var dbservice = new DBService();
-
-export default dbservice;
+export default DBService;

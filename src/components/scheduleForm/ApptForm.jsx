@@ -1,5 +1,5 @@
 import React from "react";
-import DBService from "../../data/DBService";
+import DBService from "data/DBService";
 
 // MUI
 import Autocomplete from "@mui/material/Autocomplete";
