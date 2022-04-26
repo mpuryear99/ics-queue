@@ -1,5 +1,5 @@
 import React from "react";
-import logobobisvg from '../media/logo-bobi.svg';
+import logobobisvg from 'media/logo-bobi.svg';
 
 
 const Footer = () => {
