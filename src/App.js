@@ -8,12 +8,11 @@ import OverviewPage from "components/pages/OverviewPage";
 //import AdminPage from "components/pages/AdminPage";
 import Admin from "components/Admin/Admin";
 import TempMachine from "components/Admin/Machines/TempMachine";
-
 import UserContext from "context/UserContext";
 
 function App() {
-  const [user, setUser] = React.useState(null);
-  const userProvider = React.useMemo(() => ({user, setUser}), [user, setUser]);
+  const [appUser, setAppUser] = React.useState(null);
+  const userProvider = React.useMemo(() => ({appUser, setAppUser}), [appUser, setAppUser]);
 
   return (
     <BrowserRouter>
