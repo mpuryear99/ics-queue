@@ -1,5 +1,6 @@
 import React from "react";
 import DBService from "data/DBService";
+import UserContext from "context/UserContext";
 
 // MUI
 import Autocomplete from "@mui/material/Autocomplete";
@@ -61,13 +62,13 @@ function checkForApptCollision(appt1, appt2) {
   return (appt1.startTime < appt2.endTime && appt2.startTime < appt1.endTime);
 }
 
-function createApptFromForm(formData) {
+function createApptFromForm(formData, user) {
   let t1 = combineDateTime(formData.date, formData.time);
   let t2 = t1.clone().add(formData.duration);
   let appt = {
     machine_id: formData.machine._id,
-    user_id: "625e2d8636e9dfe23304068e",
-    username: "user1",
+    user_id: user._id,
+    username: user.netid,
     startTime: t1.unix(),
     endTime: t2.unix(),
   }
@@ -87,6 +88,8 @@ const ApptTimeListItem = ({appt}) => {
 }
 
 const ApptForm = () => {
+  const {appUser} = React.useContext(UserContext);
+
   //#region useState hooks
   const [formData, setFormData] = React.useState({
     machine: null,
@@ -136,14 +139,19 @@ const ApptForm = () => {
 
   // Get machine list
   React.useLayoutEffect(() => {
+    let isSubscribed = true;
     (async () => {
       let ml = await DBService.getMachines();
-      setMachineList(ml);
+      if (isSubscribed) {
+        setMachineList(ml);
+      }
     })();
+    return () => isSubscribed = false;
   }, []);
 
   // Get appointment list
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
+    let isSubscribed = true;
     if (formData.machine == null || !statusInfo.dateValid || !moment.isMoment(formData.date)) {
       setApptList([]);
       return;
@@ -157,6 +165,7 @@ const ApptForm = () => {
     }
     DBService.getAppointmentsByQuery(query)
       .then(appts => {
+        if (!isSubscribed) { return; }
         if (appts === undefined) {
           alert("Warning: Unable to query booked appointments for selected data/machine. Displayed appointments may be inaccurate.");
           appts = []
@@ -164,6 +173,8 @@ const ApptForm = () => {
         appts = appts.sort((a,b) => (a.startTime < b.startTime ? -1 : 1));
         setApptList(appts);
       });
+
+    return () => isSubscribed = false;
   }, [formData.machine, formData.date, statusInfo.dateValid])
 
 
@@ -227,9 +238,19 @@ const ApptForm = () => {
   }
 
   const handleSubmit = (event) => {
+    // Ensure user is set
+    let user = appUser;
+    if (user == null) {
+      setStatusInfo(s => ({...s,
+        status: "error",
+        message: `Unable to determine user identity. (No user selected)`,
+      }));
+      return;
+    }
+
     // Create appt from form data
     try {
-      var appt = createApptFromForm(formData)
+      var appt = createApptFromForm(formData, user)
     } catch (e) {
       setStatusInfo(s => ({...s,
         status: "error",

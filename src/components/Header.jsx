@@ -14,15 +14,19 @@ const UserSelect = ({style}) => {
   const [userList, setUserList] = React.useState([]);
 
   React.useEffect(() => {
+    let isSubscribed = true;
     (async () => {
-      let res = await DBService.getUsers()
-      setUserList(res ?? []);
+      let res = await DBService.getUsers();
+      if (isSubscribed) {
+        setUserList(res ?? []);
+      }
     })();
+    return () => isSubscribed = false;
   }, []);
 
   const handleChange = (event) => {
     let newUser = event.target.value;
-    if (newUser == "")
+    if (newUser === "")
       newUser = null;
     setAppUser(newUser);
   }

@@ -7,6 +7,7 @@ import SchedulerPage from "components/pages/SchedulerPage";
 import OverviewPage from "components/pages/OverviewPage";
 //import AdminPage from "components/pages/AdminPage";
 import Admin from "components/Admin/Admin";
+import Portal from "components/StudentPortal/Portal";
 import TempMachine from "components/Admin/Machines/TempMachine";
 import UserContext from "context/UserContext";
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="admin" element={<Admin />}>
               <Route path=":machine" element={<TempMachine />} />
             </Route>
+            <Route path="portal" element={<Portal user={appUser} />} />
             <Route path="schedule" element={<SchedulerPage />} />
             <Route path="overview" element={<OverviewPage />} />
           </Route>

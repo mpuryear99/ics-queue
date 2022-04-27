@@ -104,8 +104,11 @@ const DBService = {
    */
   async getAppointmentsByQuery(query, checkOnly=false) {
     let searchParams = new URLSearchParams(query);
-    if (checkOnly)
+    if (checkOnly) {
       searchParams.append('checkOnly', 'true');
+    } else if (Object.keys(query).length === 0) {
+      return await this.getAppointments()
+    }
 
     try {
       var res = await fetch("api/appointments/query?" + searchParams.toString());
