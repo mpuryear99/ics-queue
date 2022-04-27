@@ -1,26 +1,25 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 import ScheduledApps from "./ScheduledApps";
 
+export default function Portal({user}) {
 
+  const apptQuery = React.useMemo(() => {
+    return user == null ? null : { user_id: user._id };
+  }, [user]);
 
-export default function Portal() {
+  // React.useEffect(() => {
+  //   if (user == null) {
+  //     alert("Select a user to see appointments");
+  //   }
+  // }, [user])
 
-    return (
-    <div>
-        <h1 style = {{padding: "0px 25px"}}>Student Portal</h1>
-        <div className="Display" 
-            style={{
-                display: "flex"
-            }}>
-
-            <div className="ScheduledApps">
-                <ScheduledApps name = "user1"/>
-            </div>
-        
-
-        </div>
-        <Outlet/>
-    </div>
-    );
+	return (
+    <>
+		  <h1 style = {{padding: "0px 25px"}}>Student Portal</h1>
+			<ScheduledApps
+        apptQuery={apptQuery}
+        subheader={`${user?.netid ?? "Unknown Users"}'s Appointments`}
+      />
+    </>
+	);
 }

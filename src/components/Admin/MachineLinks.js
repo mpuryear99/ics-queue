@@ -7,13 +7,16 @@ import DBService from "data/DBService";
 
 export default function MachineLinks() {
   const [machineList, setMachineList] = React.useState([]);
+
   React.useEffect(() => {
+    let isSubscribed = true;
     (async () => {
       let ml = await DBService.getMachines();
-      if (ml !== undefined) {
+      if (ml !== undefined && isSubscribed) {
         setMachineList(ml)
       }
     })();
+    return () => isSubscribed = false;
   }, [])
 
   return (

@@ -1,5 +1,6 @@
+import UserContext from "context/UserContext";
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import AdminMainData from "./AdminMainData";
 import MachineLinks from "./MachineLinks";
 
@@ -11,10 +12,21 @@ let Data =
         time_usage: "2 hours", 
         scheduled_App: 5, 
         curr_Proj: 6,
-    }, 
+    },
 }
 
 export default function Admin() {
+    const navigate = useNavigate();
+
+    const {appUser} = React.useContext(UserContext);
+
+    React.useEffect(() => {
+        if (!(appUser?.admin ?? false)) {
+            alert("Not Authorized: Returning to home");
+            navigate("/", { replace: true });
+        }
+    }, [appUser, navigate]);
+
     return (
     <div>
         <h1 style = {{padding: "0px 25px"}}>Admin Home Page</h1>

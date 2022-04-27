@@ -11,12 +11,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const TZ_NY = "America/New_York";
 
-export default function ScheduledApps({ name }) {
+export default function ScheduledApps({ apptQuery, subheader }) {
 
   const [machinesDict, setMachinsDict] = React.useState({});
   const [appointmentList, setAppointmentList] = React.useState([]);
+  const [apptsToDelete, setApptsToDelete] = React.useState([]);
 
   React.useEffect(() => {
+    let isSubscribed = true;
     (async () => {
       let ml = await DBService.getMachines();
       if (ml !== undefined) {
@@ -24,41 +26,45 @@ export default function ScheduledApps({ name }) {
         for (let m of ml) {
           md[m._id] = m.name;
         }
-        console.log(ml)
-        console.log(md)
-        setMachinsDict(md);
+        if (isSubscribed) {
+          setMachinsDict(md);
+        }
       }
     })();
+    return () => { isSubscribed = false; }
   }, []);
   
   React.useEffect(() => {
+    let isSubscribed = true;
     (async () => {
-      let appts = await DBService.getAppointments();
-      if (appts !== undefined) {
-        setAppointmentList(appts);
+      await Promise.allSettled(
+        apptsToDelete.map(a => DBService.deleteAppointmentByID(a._id))
+      );
+
+      let appts = undefined;
+      if (apptQuery != null) {
+        appts = await DBService.getAppointmentsByQuery(apptQuery);
+      }
+
+      if (isSubscribed) {
+        setAppointmentList(appts ?? []);
+        setApptsToDelete([]);
       }
     })();
-  }, []);
+    return () => { isSubscribed = false; }
 
+  }, [apptQuery, apptsToDelete]);
 
-  const onClickDelete = async (apptID) => {
-    console.log("Attempting to delete " + apptID);
-
-    await DBService.deleteAppointmentByID(apptID);
-
-    let appts = await DBService.getAppointments();
-    if (appts !== undefined) {
-      setAppointmentList(appts);
-    }
+  const onClickDelete = (apptID) => {
+    setApptsToDelete(l => [...l, apptID]);
   }
 
   return (
     <>
       {/* <h2 style={{ padding: "0px 25px" }}>{name}'s Appointments</h2> */}
-
       <List 
         dense={false}
-        subheader={`${name}'s Appointments`}
+        subheader={subheader}
       >
         {appointmentList.map((a) => (
           <ListItem
