@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 import momentRandom from "moment-random";
 import machines from './machines.json';
 
@@ -27,14 +27,21 @@ let items = [];
 
         let username = String(_id);
 
-        //End of Day
-        let eod = moment().endOf('day').unix();
-        //Start of Day
-        let sod = moment().startOf('day').unix();
+        // //End of Day
+        // let eod = moment().endOf('day').unix();
+        // //Start of Day
+        // let sod = moment().startOf('day').unix();
+        const TZ_NY = "America/New_York";
+
+        let start = moment().tz(TZ_NY, true).startOf('day');
+        let end = moment().tz(TZ_NY, true).endOf('day');
         
         //generate random times between the beginning and end of the day
-        let startTime = momentRandom(eod, sod);
-        let endTime = momentRandom(eod, startTime);
+        let startTime = momentRandom(end, start);
+        let endTime = momentRandom(end, startTime);
+
+        console.log(startTime);
+        console.log(endTime);
         
         let appointment = {_id, machine_id, user_id, username, startTime, endTime};
         
