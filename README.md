@@ -18,6 +18,11 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+### `yarn start:mock`
+
+Same as `yarn start` using mock API instead of backend.\
+Mock API mimics the behavior of the backend and database for testing.
+
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.\
