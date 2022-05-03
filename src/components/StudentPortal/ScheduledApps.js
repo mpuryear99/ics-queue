@@ -82,9 +82,9 @@ export default function ScheduledApps({ apptQuery, subheader }) {
             <ListItemText
               primary={machinesDict[a.machine_id]}
               secondary={
-                moment.unix(a.startTime).tz(TZ_NY).format("MMMM Do YYYY, h:mm:ss a") +
+                moment.unix(a.startTime).tz(TZ_NY).format("MMMM Do YYYY, h:mm a") +
                 " - " +
-                moment.unix(a.endTime).tz(TZ_NY).format("MMMM Do YYYY, h:mm:ss a")
+                moment.unix(a.endTime).tz(TZ_NY).format("h:mm a")
               }
             />
           </ListItem>

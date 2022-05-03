@@ -15,7 +15,7 @@ export default function Portal({user}) {
 
 	return (
     <>
-		  <h1 style = {{padding: "0px 25px"}}>Student Portal</h1>
+		  <h2 style = {{padding: "0px 0px", marginTop: "0px"}}>Student Portal</h2>
 			<ScheduledApps
         apptQuery={apptQuery}
         subheader={`${user?.netid ?? "Unknown Users"}'s Appointments`}
