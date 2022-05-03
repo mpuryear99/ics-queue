@@ -13,11 +13,12 @@ const DBService = {
    * @return {Promise<Array<Object>|undefined>} List of machine info objects
    */
   async getMachines() {
+    let data;
     try {
-      var res = await fetch('api/machines');
+      let res = await fetch('api/machines');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.json();
+      data = await res.json();
     } catch (e) {
       console.error(e);
       return undefined;
@@ -33,11 +34,12 @@ const DBService = {
    * @return {Promise<Object|undefined>} Machine with _id
    */
   async getMachineByID(id) {
+    let data;
     try {
-      var res = await fetch(`api/machines/${id}`);
+      let res = await fetch(`api/machines/${id}`);
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.json();
+      data = await res.json();
     } catch (e) {
       console.error(e);
       return undefined;
@@ -56,11 +58,12 @@ const DBService = {
    * @return {Promise<Array<Object>|undefined>} List of appointment objects
    */
   async getAppointments() {
+    let data;
     try {
-      var res = await fetch('api/appointments');
+      let res = await fetch('api/appointments');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.json();
+      data = await res.json();
     } catch (e) {
       console.error(e);
       return undefined;
@@ -76,11 +79,12 @@ const DBService = {
    * @return {Promise<Object|undefined>} Appointment with _id
    */
   async getAppointmentByID(id) {
+    let data;
     try {
-      var res = await fetch(`api/appointments/${id}`);
+      let res = await fetch(`api/appointments/${id}`);
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.json();
+      data = await res.json();
     } catch (e) {
       console.error(e);
       return undefined;
@@ -103,6 +107,8 @@ const DBService = {
    * @return {Promise<Array<Object>|Boolean>} List of appointments matching query, or true/false if checkOnly
    */
   async getAppointmentsByQuery(query, checkOnly=false) {
+    let data;
+
     let searchParams = new URLSearchParams(query);
     if (checkOnly) {
       searchParams.append('checkOnly', 'true');
@@ -111,14 +117,13 @@ const DBService = {
     }
 
     try {
-      var res = await fetch("api/appointments/query?" + searchParams.toString());
-
+      let res = await fetch("api/appointments/query?" + searchParams.toString());
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       
-      var data = res.headers.get("Content-Type").includes('application/json') 
+      data = res.headers.get("Content-Type").includes('application/json') 
         ? await res.json()
-        : await res.text()
+        : await res.text();
 
     } catch (e) {
       console.error(e);
@@ -144,17 +149,18 @@ const DBService = {
    * @return {Promise<String|undefined>} _id of posted object if successful; undefined on error.
    */
   async postAppointment(appointment) {
+    let data;
     let getParams = ({ user_id, machine_id, username, startTime, endTime }) => 
                     ({ user_id, machine_id, username, startTime, endTime });
     let cleanAppt = getParams(appointment);
 
-    for (let item of cleanAppt) {
-      if (cleanAppt[item] === undefined)
-        throw new Error(`${item} is undefined`);
+    for (let [key, value] of Object.entries(cleanAppt)) {
+      if (value == null)
+        throw new Error(`Appt key '${key}' is invalid (value: '${value}').`);
     }
 
     try {
-      var res = await fetch('/api/appointments/add/post', {
+      let res = await fetch('/api/appointments/add/post', {
         method: 'POST',
         headers: {
           'Accept': 'text/html',
@@ -166,7 +172,7 @@ const DBService = {
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
 
-      var data = await res.text()
+      data = await res.text();
 
     } catch (e) {
       console.error(e);
@@ -183,14 +189,15 @@ const DBService = {
    * @return {Promise<Boolean|undefined>} True if deleted, False if not; undefined if error.
    */
   async deleteAppointmentByID(id) {
+    let data;
     try {
-      var res = await fetch(`api/appointments/${id}/delete`, {
+      let res = await fetch(`api/appointments/${id}/delete`, {
         method: "DELETE"
       });
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.text();
-      data = !data.includes("0")
+      data = await res.text();
+      data = !data.includes("0");
     } catch (e) {
       console.error(e);
       return undefined;
@@ -209,11 +216,12 @@ const DBService = {
    * @return {Promise<Array<Object>|undefined>} list of user info objects
    */
   async getUsers() {
+    let data;
     try {
-      var res = await fetch('api/users');
+      let res = await fetch('api/users');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.json();
+      data = await res.json();
     } catch (e) {
       console.error(e);
       return undefined;
@@ -229,11 +237,12 @@ const DBService = {
    * @return {Promise<Object|undefined>} User with _id
    */
   async getUserByID(id) {
+    let data;
     try {
-      var res = await fetch(`api/users/${id}`);
+      let res = await fetch(`api/users/${id}`);
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.json();
+      data = await res.json();
     } catch (e) {
       console.error(e);
       return undefined;
@@ -252,6 +261,7 @@ const DBService = {
    * @return {Promise<String|undefined>} _id of posted object if successful; undefined on error.
    */
   async postUser(user) {
+    let data;
     let getParams = ({ netid, email, admin }) => ({ netid, email, admin });
     let cleanUser = getParams(user);
 
@@ -261,7 +271,7 @@ const DBService = {
     }
 
     try {
-      var res = await fetch('/api/users/add', {
+      let res = await fetch('/api/users/add', {
         method: 'POST',
         headers: {
           'Accept': 'text/html',
@@ -273,7 +283,7 @@ const DBService = {
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
 
-      var data = await res.text()
+      data = await res.text();
 
     } catch (e) {
       console.error(e);
@@ -290,13 +300,14 @@ const DBService = {
    * @return {Promise<Boolean|undefined>} True if deleted, False if not; undefined if error.
    */
   async deleteUserByID(id) {
+    let data;
     try {
-      var res = await fetch(`api/users/${id}/delete`, {
+      let res = await fetch(`api/users/${id}/delete`, {
         method: "DELETE"
       });
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
-      var data = await res.text();
+      data = await res.text();
       data = !data.includes("0")
     } catch (e) {
       console.error(e);
