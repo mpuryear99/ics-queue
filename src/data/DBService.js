@@ -97,23 +97,26 @@ const DBService = {
    * Get list of appointments by query from database.
    * 
    * @param {Object} query Object describing query. All properties are optional.
-   * @param {Number} query.startBefore
-   * @param {Number} query.startAfter
-   * @param {Number} query.endBefore
-   * @param {Number} query.endAfter
-   * @param {String} query.machine_id
-   * @param {String} query.user_id
+   * @param {Number} [query.startBefore]
+   * @param {Number} [query.startAfter]
+   * @param {Number} [query.endBefore]
+   * @param {Number} [query.endAfter]
+   * @param {String} [query.machine_id]
+   * @param {String} [query.user_id]
    * @param {Boolean} [checkOnly]
-   * @return {Promise<Array<Object>|Boolean>} List of appointments matching query, or true/false if checkOnly
+   * @param {Boolean} [count]
+   * @return {Promise<Array<Object>|Boolean|Number>} List of appointments matching query, or true/false if checkOnly, or number if count
    */
-  async getAppointmentsByQuery(query, checkOnly=false) {
+  async getAppointmentsByQuery(query, checkOnly=false, count=false) {
     let data;
 
     let searchParams = new URLSearchParams(query);
     if (checkOnly) {
       searchParams.append('checkOnly', 'true');
+    } else if (count) {
+      searchParams.append('count', 'true');
     } else if (Object.keys(query).length === 0) {
-      return await this.getAppointments()
+      return await this.getAppointments();
     }
 
     try {
@@ -121,9 +124,8 @@ const DBService = {
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       
-      data = res.headers.get("Content-Type").includes('application/json') 
-        ? await res.json()
-        : await res.text();
+      let isJSON = res.headers.get("Content-Type").includes('application/json');
+      data = isJSON ? await res.json() : await res.text();
 
     } catch (e) {
       console.error(e);
@@ -219,6 +221,26 @@ const DBService = {
     let data;
     try {
       let res = await fetch('api/users');
+      if (res.status >= 400)
+        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      data = await res.json();
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+    return data;
+  },
+
+
+  /**
+   * Get number of users in database
+   *
+   * @return {Promise<Number|undefined>} Number of users
+   */
+  async getUsers() {
+    let data;
+    try {
+      let res = await fetch('api/usercount');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
