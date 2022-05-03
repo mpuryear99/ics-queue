@@ -139,7 +139,7 @@ module.exports = function(app) {
     app.get('/api/usercount', async (req, res) => {
       await delay(125);
       res.json(users_json.length);
-    })
+    });
 
     // users/<id>
     app.get('/api/users/:id', async (req, res) => {

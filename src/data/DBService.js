@@ -237,7 +237,7 @@ const DBService = {
    *
    * @return {Promise<Number|undefined>} Number of users
    */
-  async getUsers() {
+  async getUserCount() {
     let data;
     try {
       let res = await fetch('api/usercount');
