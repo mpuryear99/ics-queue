@@ -15,33 +15,42 @@ const g = machines.map(m => {
 export default function genAppointments(numAppointments){
 
 let items = [];
+let users = ['user1', 'user2', 'user3', 'admin1', 'admin2', 'admin3']
 
     for(let i = 0; i < numAppointments; i++){
 
 
         let _id = getRandomInt(500);
 
-        let machine_id = g[getRandomInt(52)].m_id;
+        let machine_id = g[getRandomInt(15)].m_id;
 
         let user_id = getRandomInt(500);
 
-        let username = String(_id);
+        let username = users[getRandomInt(5)];
 
-        // //End of Day
-        // let eod = moment().endOf('day').unix();
-        // //Start of Day
-        // let sod = moment().startOf('day').unix();
+        //Eastern Time
         const TZ_NY = "America/New_York";
 
-        let start = moment().tz(TZ_NY, true).startOf('day');
+        //start of day
+        let start = moment().tz(TZ_NY, true).startOf('day').add(8, 'hours');
+        //end of day
         let end = moment().tz(TZ_NY, true).endOf('day');
+        let endOfShift = moment().tz(TZ_NY, true).endOf('day').add(-7, 'hours');
         
-        //generate random times between the beginning and end of the day
-        let startTime = momentRandom(end, start);
+        //generate random times between ICS opening time and ICS closing time
+        let startTime = momentRandom(endOfShift, start);
+        //appointments started before ICS closing time can be ran past closing time
         let endTime = momentRandom(end, startTime);
 
-        console.log(startTime);
-        console.log(endTime);
+        for(let j = 0; j < items.length; j++){
+          if(items[j].machine_id === machine_id){
+            if(startTime > items[j].startTime && startTime < items[j].endTime){
+              startTime = momentRandom(endOfShift, items[j].startTime);
+              endTime = momentRandom(end, startTime);
+
+            }
+          }
+        }
         
         let appointment = {_id, machine_id, user_id, username, startTime, endTime};
         
