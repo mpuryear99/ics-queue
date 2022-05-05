@@ -34,13 +34,10 @@ export default function ScheduledApps({ apptQuery, subheader }) {
     return () => { isSubscribed = false; }
   }, []);
   
+
   React.useEffect(() => {
     let isSubscribed = true;
     (async () => {
-      await Promise.allSettled(
-        apptsToDelete.map(a => DBService.deleteAppointmentByID(a._id))
-      );
-
       let appts = undefined;
       if (apptQuery != null) {
         appts = await DBService.getAppointmentsByQuery(apptQuery);
@@ -48,12 +45,31 @@ export default function ScheduledApps({ apptQuery, subheader }) {
 
       if (isSubscribed) {
         setAppointmentList(appts ?? []);
-        setApptsToDelete([]);
       }
     })();
-    return () => { isSubscribed = false; }
 
-  }, [apptQuery, apptsToDelete]);
+    return () => { isSubscribed = false; }
+  }, [apptQuery]);
+
+
+  React.useEffect(() => {
+    let isSubscribed = true;
+    (async () => {
+      if (apptsToDelete.length > 0) {
+        await Promise.allSettled(
+          apptsToDelete.map(id => DBService.deleteAppointmentByID(id))
+        );
+  
+        if (isSubscribed) {
+          setAppointmentList(appts => appts.filter(a => !apptsToDelete.includes(a._id)));
+          setApptsToDelete([]);
+        }
+      }
+    })();
+
+    return () => { isSubscribed = false; }
+  }, [apptsToDelete]);
+
 
   const onClickDelete = (apptID) => {
     setApptsToDelete(l => [...l, apptID]);
