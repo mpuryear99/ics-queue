@@ -8,7 +8,7 @@ import DBService from "../../data/DBService";
 import moment from "moment";
 import genAppointments from '../../data/dev/randomAppointments';
 
-const test_items = genAppointments(75);
+const test_items = genAppointments(18);
 let start = moment().startOf('day');
 let end = moment().endOf('day');
 
@@ -27,10 +27,7 @@ const Scheduler = () => {
 
       let al = await DBService.getAppointmentsByQuery({startBefore, startAfter});
       al = [...al, ...test_items]
-      // al.forEach(appt => {
-      //   appt.startTime *= 1000;
-      //   appt.endTime *= 1000;
-      // })
+
       setAppointmentList(al);
 
     })();
@@ -53,12 +50,10 @@ const Scheduler = () => {
         itemTimeStartKey: 'startTime',
         itemTimeEndKey: 'endTime',
       }}
-      // defaultTimeStart={moment().endOf('day')}
-      // defaultTimeEnd={moment().add(36, 'hours')}
-      
+
       //This combination of start and end times properly shows one full 24 hour day
       visibleTimeStart={moment().endOf('day').valueOf()}
-      visibleTimeEnd={moment().add(36, 'hours').valueOf()}
+      visibleTimeEnd={moment().endOf('day').add(24, 'hours').valueOf()}
 
       //disable zoom
       minZoom = {end-start}
