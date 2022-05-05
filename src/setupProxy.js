@@ -47,7 +47,11 @@ module.exports = function(app) {
     app.get('/api/machines/:id', async (req, res) => {
       await delay();
       let _id = req.params["id"];
-      res.json(machines_json.find(x => x._id === _id));
+      let m = machines_json.find(x => x._id == _id);
+      if (m === undefined) {
+        res.status(404);
+      }
+      res.json(m);
     });
 
 
@@ -115,7 +119,11 @@ module.exports = function(app) {
     app.get('/api/appointments/:id', async (req, res) => {
       await delay();
       let _id = req.params["id"];
-      res.json(appointments_mock.find(x => x._id === _id));
+      let appt = appointments_mock.find(x => x._id == _id);
+      if (appt === undefined) {
+        res.status(404);
+      }
+      res.json(appt);
     });
 
     // appointments/<id>/delete
@@ -145,7 +153,11 @@ module.exports = function(app) {
     app.get('/api/users/:id', async (req, res) => {
       await delay();
       let _id = req.params["id"];
-      res.json(users_json.find(x => x._id === _id));
+      let u = users_json.find(x => x._id == _id);
+      if (u === undefined) {
+        res.status(404);
+      }
+      res.json();
     });
 
     // users/add
