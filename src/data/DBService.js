@@ -15,7 +15,7 @@ const DBService = {
   async getMachines() {
     let data;
     try {
-      let res = await fetch('api/machines');
+      let res = await fetch('/api/machines');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -36,7 +36,7 @@ const DBService = {
   async getMachineByID(id) {
     let data;
     try {
-      let res = await fetch(`api/machines/${id}`);
+      let res = await fetch(`/api/machines/${id}`);
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -60,7 +60,7 @@ const DBService = {
   async getAppointments() {
     let data;
     try {
-      let res = await fetch('api/appointments');
+      let res = await fetch('/api/appointments');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -81,7 +81,7 @@ const DBService = {
   async getAppointmentByID(id) {
     let data;
     try {
-      let res = await fetch(`api/appointments/${id}`);
+      let res = await fetch(`/api/appointments/${id}`);
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -120,7 +120,7 @@ const DBService = {
     }
 
     try {
-      let res = await fetch("api/appointments/query?" + searchParams.toString());
+      let res = await fetch("/api/appointments/query?" + searchParams.toString());
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       
@@ -193,7 +193,7 @@ const DBService = {
   async deleteAppointmentByID(id) {
     let data;
     try {
-      let res = await fetch(`api/appointments/${id}/delete`, {
+      let res = await fetch(`/api/appointments/${id}/delete`, {
         method: "DELETE"
       });
       if (res.status >= 400)
@@ -220,7 +220,7 @@ const DBService = {
   async getUsers() {
     let data;
     try {
-      let res = await fetch('api/users');
+      let res = await fetch('/api/users');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -240,7 +240,7 @@ const DBService = {
   async getUserCount() {
     let data;
     try {
-      let res = await fetch('api/usercount');
+      let res = await fetch('/api/usercount');
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -261,7 +261,7 @@ const DBService = {
   async getUserByID(id) {
     let data;
     try {
-      let res = await fetch(`api/users/${id}`);
+      let res = await fetch(`/api/users/${id}`);
       if (res.status >= 400)
         throw new Error(`Error ${res.status}: ${res.statusText}`);
       data = await res.json();
@@ -324,7 +324,7 @@ const DBService = {
   async deleteUserByID(id) {
     let data;
     try {
-      let res = await fetch(`api/users/${id}/delete`, {
+      let res = await fetch(`/api/users/${id}/delete`, {
         method: "DELETE"
       });
       if (res.status >= 400)
