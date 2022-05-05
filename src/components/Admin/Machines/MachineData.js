@@ -1,21 +1,15 @@
 
-export default function MachineData({machine, num_Users, time_usage, scheduled_App, curr_Proj}) {
-    return (
-    <div style={{ background: "#f5f5f5", 
-                width: "400px", 
-                height: "300px",
-                margin: "20px",
-                border: "2px solid #000000",
-                alignItems: "center",
-                padding: "20px",
-                }}>
-       <h2>{machine} Data</h2>
-       <h3>Number of Users: {num_Users}</h3>
-       <h3>Time Used: {time_usage}</h3>
-       <h3>Number of Scheduled Appointments: {scheduled_App}</h3>
-       <h3>Number of Current Projects Running: {curr_Proj}</h3>
+import React from "react";
+import Box from "@mui/material/Box";
 
-
-    </div>
-    );
+export default function MachineData({style, num_Users, time_usage, scheduled_App, curr_Proj}) {
+  return (
+    <Box sx={style}>
+      <h2 style={{padding: "0px 0px", textAlign:"center"}}>Usage Data</h2>
+      <p>Number of Users: {num_Users}</p>
+      <p>Time Used: {time_usage}</p>
+      <p>Scheduled Appointments: {scheduled_App}</p>
+      <p>Current Projects Running: {curr_Proj}</p>
+    </Box>
+  );
 }
