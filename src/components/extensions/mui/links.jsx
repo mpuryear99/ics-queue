@@ -12,7 +12,7 @@ export function ListItemLink({ icon, primary, to, ...other }) {
   const renderLink = React.useMemo(
     () =>
       React.forwardRef((itemProps, ref) => {
-        return <Link to={to} ref={ref} {...itemProps} /*role={undefined}*/ />;
+        return <Link style={{color:"inherit"}} to={to} ref={ref} {...itemProps} /*role={undefined}*/ />;
       }),
     [to],
   );

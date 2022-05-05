@@ -22,7 +22,7 @@ function App() {
           <Route path="/" element={<PageBase />}>
             <Route path="" element={<HomePage />} />
             <Route path="admin" element={<Admin />}>
-              <Route path=":machine" element={<TempMachine />} />
+              <Route path=":machine_id" element={<TempMachine />} />
             </Route>
             <Route path="portal" element={<Portal user={appUser} />} />
             <Route path="schedule" element={<SchedulerPage />} />

@@ -9,11 +9,22 @@ let Data =
 {
     1: {
         num_Users: 20,
-        time_usage: "2 hours", 
+        time_usage: "18 hours", 
         scheduled_App: 5, 
         curr_Proj: 6,
     },
 }
+
+const boxStyle = {
+    background: "#f5f5f5", 
+    width: "400px", 
+    height: "350px",
+    margin: "10px",
+    border: "2px solid #000000",
+    //alignItems: "center",
+    //padding: "20px",
+};
+
 
 export default function Admin() {
     const navigate = useNavigate();
@@ -29,25 +40,31 @@ export default function Admin() {
 
     return (
     <div>
-        <h1 style = {{padding: "0px 25px"}}>Admin Home Page</h1>
-        <div className="Display" 
+        <h2 style = {{padding: "0px 0px", marginTop: "0px"}}>Admin Home Page</h2>
+        <div
             style={{
                 display: "flex"
-            }}>
-            
-            <div className="MachineLinks">
-                <MachineLinks/>
-            </div>
-            <div className="AdminMainData" 
-            style={{
-                width: "500px",
-                border: "2px solid #ffffff",
-                padding: "10px",
-                background: "#ffffff",
-                alignItems: "center"
-            }}>
-                <AdminMainData num_Users={Data[1].num_Users} time_usage={Data[1].time_usage} scheduled_App={Data[1].scheduled_App} curr_Proj={Data[1].curr_Proj}/>
-            </div>
+            }}
+        >
+            <MachineLinks 
+                style={{
+                    ...boxStyle,
+                    alignItems: "center",
+                    marginLeft:"0px"
+                }}
+            />
+            <AdminMainData
+                num_Users={Data[1].num_Users}
+                time_usage={Data[1].time_usage}
+                scheduled_App={Data[1].scheduled_App}
+                curr_Proj={Data[1].curr_Proj}
+                style={{
+                    ...boxStyle,
+                    width:"360px",
+                    alignItems: "center",
+                    padding: "0px 20px",
+                }}
+            />
         </div>
         <Outlet/>
     </div>

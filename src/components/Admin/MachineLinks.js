@@ -5,7 +5,7 @@ import { ListItemLink } from "components/extensions/mui/links";
 import DBService from "data/DBService";
 
 
-export default function MachineLinks() {
+export default function MachineLinks({style}) {
   const [machineList, setMachineList] = React.useState([]);
 
   React.useEffect(() => {
@@ -20,20 +20,13 @@ export default function MachineLinks() {
   }, [])
 
   return (
-    <Box
-      sx={{
-        background: "#f5f5f5",
-        width: "400px",
-        height: "350px",
-        margin: "20px",
-        border: "2px solid #000000",
-        alignItems: "center",
-        maxHeight: "100%",
-        overflow: "auto",
-      }}
-    >
-      <h1 style={{ padding: "0px 25px" }}>Machines</h1>
-      <List>
+    <Box sx={{
+      ...style,
+      display: "flex",
+      flexDirection: "column"
+    }}>
+      <h2 style={{ padding: "0px 25px" }}>Machines</h2>
+      <List sx={{ overflow: "auto" }}>
         {machineList.map(m => (
           <ListItemLink key={m._id} primary={m.name} to={m._id.toString()} />
         ))}

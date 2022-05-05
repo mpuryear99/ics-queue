@@ -14,6 +14,7 @@ const express = require('express');
 const machines_json = require("./data/dev/machines.json");
 /**@type {Array<Object>} */
 const users_json = require("./data/dev/users.json");
+const { deflate } = require('zlib');
 /**@type {Array<Object>} */
 var appointments_mock = [];
 
@@ -46,7 +47,11 @@ module.exports = function(app) {
     app.get('/api/machines/:id', async (req, res) => {
       await delay();
       let _id = req.params["id"];
-      res.json(machines_json.find(x => x._id === _id));
+      let m = machines_json.find(x => x._id == _id);
+      if (m === undefined) {
+        res.status(404);
+      }
+      res.json(m);
     });
 
 
@@ -99,8 +104,10 @@ module.exports = function(app) {
         resList = resList.filter(a => a.endTime > req.query.endAfter);
 
       if (req.query.checkOnly != null) {
-        res.set('Content-Type', 'text/html');
-        res.send((resList.length > 1).toString());
+        res.json((resList.length > 0));
+      }
+      else if (req.query.count != null) {
+        res.json(resList.length);
       }
       else {
         res.set('Content-Type', 'application/json');
@@ -112,7 +119,11 @@ module.exports = function(app) {
     app.get('/api/appointments/:id', async (req, res) => {
       await delay();
       let _id = req.params["id"];
-      res.json(appointments_mock.find(x => x._id === _id));
+      let appt = appointments_mock.find(x => x._id == _id);
+      if (appt === undefined) {
+        res.status(404);
+      }
+      res.json(appt);
     });
 
     // appointments/<id>/delete
@@ -132,11 +143,21 @@ module.exports = function(app) {
       res.json(users_json);
     });
 
+    // usercount
+    app.get('/api/usercount', async (req, res) => {
+      await delay(125);
+      res.json(users_json.length);
+    });
+
     // users/<id>
     app.get('/api/users/:id', async (req, res) => {
       await delay();
       let _id = req.params["id"];
-      res.json(users_json.find(x => x._id === _id));
+      let u = users_json.find(x => x._id == _id);
+      if (u === undefined) {
+        res.status(404);
+      }
+      res.json();
     });
 
     // users/add
